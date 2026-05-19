@@ -3,3 +3,5 @@ langchain
 uvicorn[standard]
 sqlalchemy
 psycopg2
+pwdlib[argon2]
+pyjwt

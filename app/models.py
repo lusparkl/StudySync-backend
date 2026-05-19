@@ -8,8 +8,10 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(nullable=False)
+    hashed_password: Mapped[str] = mapped_column(nullable=False)
     profile_photo_link: Mapped[str] = mapped_column(nullable=False)
 
     workspaces: Mapped[list[Workspace]] = relationship(back_populates="owner")
@@ -18,12 +20,12 @@ class User(Base):
 class Workspace(Base):
     __tablename__ = "workspaces"
 
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     name: Mapped[str] = mapped_column(nullable=False)
-    description: Mapped[str] = mapped_column()
+    description: Mapped[str] = mapped_column(nullable=True)
     avatar_link: Mapped[str] = mapped_column(nullable=False)
-    deadline: Mapped[datetime] = mapped_column()
+    deadline: Mapped[datetime] = mapped_column(nullable=True)
 
     owner: Mapped[User] = relationship(back_populates="workspaces")
     tasks: Mapped[list[Task]] = relationship(back_populates="workspace")
@@ -31,11 +33,11 @@ class Workspace(Base):
 class Task(Base):
     __tablename__ = "tasks"
 
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
     workspace_id: Mapped[int] = mapped_column(ForeignKey("workspaces.id"), nullable=False)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(nullable=False)
-    text: Mapped[str] = mapped_column()
+    text: Mapped[str] = mapped_column(nullable=True)
 
     owner: Mapped[User] = relationship(back_populates="tasks")
     workspace: Mapped[Workspace] = relationship(back_populates="tasks")
