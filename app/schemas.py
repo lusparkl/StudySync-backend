@@ -55,3 +55,27 @@ class TaskEdit(BaseModel):
     title: str | None = None
     text: str | None = None
 
+class NoteCreate(BaseModel): #owner id - jwt, task id - link
+    title: str
+    text: str | None = None
+
+class NoteRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    owner_id: int
+    task_id: int
+    title: str
+    text: str | None 
+
+class NoteEdit(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    title: str | None = None
+    text: str  | None = None
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+    

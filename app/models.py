@@ -8,7 +8,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     
-    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=False)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
@@ -20,9 +20,9 @@ class User(Base):
 class Workspace(Base):
     __tablename__ = "workspaces"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    name: Mapped[str] = mapped_column(nullable=False)
+    workspace_id: Mapped[int] = mapped_column(primary_key=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
+    title: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=True)
     avatar_link: Mapped[str] = mapped_column(nullable=False)
     deadline: Mapped[datetime] = mapped_column(nullable=True)
@@ -33,11 +33,19 @@ class Workspace(Base):
 class Task(Base):
     __tablename__ = "tasks"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    workspace_id: Mapped[int] = mapped_column(ForeignKey("workspaces.id"), nullable=False)
-    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    task_id: Mapped[int] = mapped_column(primary_key=True)
+    workspace_id: Mapped[int] = mapped_column(ForeignKey("workspaces.workspace_id"), nullable=False)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
     title: Mapped[str] = mapped_column(nullable=False)
     text: Mapped[str] = mapped_column(nullable=True)
 
     owner: Mapped[User] = relationship(back_populates="tasks")
     workspace: Mapped[Workspace] = relationship(back_populates="tasks")
+
+class Note(Base):
+    __tablename__="notes"
+    note_id: Mapped[int] = mapped_column(primary_key=True)
+    task_id: Mapped[int] = mapped_column(ForeignKey("tasks.task_id"), nullable=False)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
+    title: Mapped[str] = mapped_column(nullable=False)
+    text: Mapped[str] = mapped_column(nullable=True)
