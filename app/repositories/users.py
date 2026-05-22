@@ -10,7 +10,7 @@ class UsersRepository:
         user = User(
             username=data.username,
             email=data.email,
-            hashed_password="change me", #We need to hash passwordd here
+            hashed_password="change me", 
             profile_photo_link="change me too" # Set default photo
         )
 

@@ -7,13 +7,15 @@ class UserCreate(BaseModel):
     email: str
     password: str
     
-class UserRead(BaseModel):
+class UserReadPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
     id: int
     username: str
-    email: str
     profile_photo_link: str | None = None
+
+class UserReadPrivate(UserReadPublic):
+    email: str
     workspaces: list[WorkspaceRead] = []
 
 class UserEdit(BaseModel):
@@ -69,8 +71,6 @@ class NoteRead(BaseModel):
     text: str | None 
 
 class NoteEdit(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
     title: str | None = None
     text: str  | None = None
 
