@@ -1,6 +1,6 @@
 from app.models import User
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from app.schemas import UserEdit, UserCreate
 from app.auth.helpers import hash_password
 
@@ -43,5 +43,5 @@ class UsersRepository:
 
 
     def get_by_email_or_username(self, login: str) -> User | None:
-        stm = select(User).where(User.email == login or User.username == login)
+        stm = select(User).where(or_(User.email == login, User.username == login))
         return self.session.scalar(stm)

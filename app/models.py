@@ -39,8 +39,9 @@ class Task(Base):
     title: Mapped[str] = mapped_column(nullable=False)
     text: Mapped[str] = mapped_column(nullable=True)
 
-    owner: Mapped[User] = relationship(back_populates="tasks")
+    owner: Mapped[User] = relationship(back_populates="tasks", )
     workspace: Mapped[Workspace] = relationship(back_populates="tasks")
+    notes: Mapped[list[Note]] = relationship(back_populates="task")
 
 class Note(Base):
     __tablename__="notes"
@@ -49,3 +50,5 @@ class Note(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
     title: Mapped[str] = mapped_column(nullable=False)
     text: Mapped[str] = mapped_column(nullable=True)
+
+    task: Mapped[Task] = relationship(back_populates="notes")

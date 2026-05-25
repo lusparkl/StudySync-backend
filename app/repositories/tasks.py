@@ -22,7 +22,7 @@ class TasksRepository:
 
         return task
     
-    def update(self, data: TaskEdit, task_id: int) -> Task | None:
+    def edit(self, data: TaskEdit, task_id: int) -> Task | None:
         task = self.session.get(Task, task_id)
 
         if task is None:

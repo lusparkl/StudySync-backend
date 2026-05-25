@@ -42,6 +42,9 @@ class WorkspacesRepository:
         stm = select(Workspace).where(Workspace.owner_id == user_id)
         return list(self.session.scalars(stm).all())
     
+    def get_by_id(self, workspace_id) -> Workspace | None:
+        return self.session.get(Workspace, workspace_id)
+    
     def delete(self, workspace_id: int) -> bool:
         workspace = self.session.get(Workspace, workspace_id)
 

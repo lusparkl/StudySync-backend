@@ -1,43 +1,33 @@
 from app.schemas import NoteCreate, NoteEdit, NoteRead
-from app.utils import get_session
-from app.repositories.notes import NotesRepository
+from app.database import get_session
+from app.services.notes import NoteService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.auth.authentication import get_current_user_id
 
-router = APIRouter(tags={"notes"})
+router = APIRouter(prefix="/workspaces/{workspace_id}/tasks/{task_id}/notes", tags={"notes"})
 
-@router.get("/notes/{note_id}", response_model=NoteRead)
-def get_note_by_id(note_id: int, session: Session = Depends(get_session)):
-    rep = NotesRepository(session)
-    result = rep.get_by_id(note_id)
+@router.get("/{note_id}", response_model=NoteRead)
+def get_note_by_id(workspace_id: int, task_id: int, note_id: int, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = NoteService(session)
+    return service.get_note_for_user(note_id, workspace_id, task_id, user_id)
 
-    if result is None:
-        raise HTTPException(status_code=404, detail="Note not found.")
-    
-    return result
+@router.get("", response_model=list[NoteRead])
+def get_notes_by_task_id(workspace_id: int, task_id: int, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = NoteService(session)
+    return service.get_notes_for_user(workspace_id, task_id, user_id)
 
-@router.post("/tasks/{task_id}/notes", response_model=NoteRead)
-def create_note(task_id: int, data: NoteCreate, session: Session = Depends(get_session)):
-    rep = NotesRepository(session)
-    user_id = 1
-    return rep.create(data, user_id, task_id)
+@router.post("", response_model=NoteRead)
+def create_note(workspace_id: int, task_id: int, data: NoteCreate, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = NoteService(session)
+    return service.create_note_for_user(workspace_id, task_id, user_id, data)
 
-@router.patch("/notes/{note_id}", response_model=NoteRead)
-def edit_note(note_id: int, data: NoteEdit, session: Session = Depends(get_session)):
-    rep = NotesRepository(session)
-    result = rep.edit(data, note_id)
+@router.patch("/{note_id}", response_model=NoteRead)
+def edit_note(workspace_id: int, task_id: int, note_id: int, data: NoteEdit, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = NoteService(session)
+    return service.edit_note_for_user(workspace_id, task_id, note_id, user_id, data)
 
-    if result is None:
-        raise HTTPException(status_code=404, detail="Note not found.")
-    
-    return result
-
-@router.delete("/notes/{note_id}", status_code=204)
-def delete_note(note_id: int, session: Session = Depends(get_session)):
-    rep = NotesRepository(session)
-    deleted = rep.delete(note_id)
-
-    if not deleted:
-        raise HTTPException(status_code=404, detail="Note not found.")
-    
-    return None
+@router.delete("/{note_id}", status_code=204)
+def delete_note(workspace_id: int, task_id: int, note_id: int, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = NoteService(session)
+    return service.delte_note_for_user(workspace_id, task_id, note_id, user_id)

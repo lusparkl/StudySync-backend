@@ -1,4 +1,4 @@
-from app.utils import get_session
+from app.database import get_session
 from sqlalchemy.orm import Session
 from app.repositories.users import UsersRepository
 from fastapi import Depends, APIRouter, HTTPException
@@ -43,7 +43,7 @@ def edit_user(data: UserEdit, session: Session = Depends(get_session)):
     result = rep.update(data, user_id)
     return result
 
-@router.post("/token")
+@router.post("/login")
 def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     rep = UsersRepository(session)
     user = rep.get_by_email_or_username(data.username)

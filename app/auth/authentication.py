@@ -1,7 +1,7 @@
 from app.auth.helpers import decode_access_token, oauth2_scheme
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
-from app.utils import get_session
+from app.database import get_session
 from app.repositories.users import UsersRepository
 
 def get_current_user_id(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)) -> int:

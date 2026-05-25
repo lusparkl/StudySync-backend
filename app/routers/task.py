@@ -1,43 +1,33 @@
 from app.schemas import TaskCreate, TaskEdit, TaskRead
-from app.utils import get_session
-from app.repositories.tasks import TasksRepository
-from fastapi import APIRouter, HTTPException, Depends
+from app.database import get_session
+from app.services.tasks import TaskService
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.auth.authentication import get_current_user_id
 
-router = APIRouter(tags=["tasks"])
+router = APIRouter(prefix="/workspaces/{workspace_id}/tasks",tags=["tasks"])
 
-@router.get("/tasks/{task_id}", response_model=TaskRead)
-def get_task(task_id: int, session: Session = Depends(get_session)):
-    rep = TasksRepository(session)
-    result = rep.get_by_id(task_id)
+@router.get("/{task_id}", response_model=TaskRead)
+def get_task(workspace_id: int, task_id: int, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = TaskService(session)
+    return service.get_task_for_user(task_id, user_id)
 
-    if result is None:
-        raise HTTPException(status_code=404, detail="Task not found.")
-    
-    return result
+@router.get("", response_model=list[TaskRead])
+def get_tasks_by_workspace_id(workspace_id: int, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = TaskService(session)
+    return service.get_tasks_for_user(workspace_id, user_id)
 
-@router.post("/workspaces/{workspace_id}/tasks", response_model=TaskRead)
-def create_task(workspace_id: int, data: TaskCreate, session: Session = Depends(get_session)):
-    rep = TasksRepository(session)
-    user_id = 1
-    return rep.create(data, user_id, workspace_id)
+@router.post("", response_model=TaskRead)
+def create_task(workspace_id: int, data: TaskCreate, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = TaskService(session)
+    return service.create_task_for_user(workspace_id, user_id, data)
 
-@router.patch("/tasks/{task_id}", response_model=TaskRead)
-def edit_task(task_id: int, data: TaskEdit, session: Session = Depends(get_session)):
-    rep = TasksRepository(session)
-    result = rep.update(data, task_id)
+@router.patch("/{task_id}", response_model=TaskRead)
+def edit_task(workspace_id: int, task_id: int, data: TaskEdit, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = TaskService(session)
+    return service.edit_task_for_user(workspace_id, user_id, task_id, data)
 
-    if result is None:
-        return HTTPException(status_code=404, detail="Task not found.")
-    
-    return result
-
-@router.delete("/tasks/{task_id}", status_code=204)
-def delete_task(task_id: int, session: Session = Depends(get_session)):
-    rep = TasksRepository(session)
-    deleted = rep.delete(task_id)
-
-    if not deleted:
-        raise HTTPException(status_code=404, detail="Task not found.")
-    
-    return None
+@router.delete("/{task_id}", status_code=204)
+def delete_task(workspace_id: int, task_id: int, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = TaskService(session)
+    service.delete_task_for_user(workspace_id, user_id, task_id)
