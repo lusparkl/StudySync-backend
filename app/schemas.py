@@ -1,6 +1,7 @@
-from pydantic import BaseModel, ConfigDict
 from __future__ import annotations
+
 from datetime import datetime
+from pydantic import BaseModel, ConfigDict
 
 class UserCreate(BaseModel):
     username: str
@@ -10,7 +11,7 @@ class UserCreate(BaseModel):
 class UserReadPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
-    id: int
+    user_id: int
     username: str
     profile_photo_link: str | None = None
 
@@ -30,7 +31,7 @@ class WorkspaceCreate(BaseModel): #You'll get owner id from jwt
 class WorkspaceRead(WorkspaceCreate): 
     model_config = ConfigDict(from_attributes=True)
     
-    id: int
+    workspace_id: int
     owner_id: int
     avatar_link: str | None = None
     tasks: list[TaskRead] = []

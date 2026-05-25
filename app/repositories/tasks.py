@@ -1,7 +1,7 @@
-from app.schemas import TaskCreate, TaskEdit
 from app.models import Task
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from app.schemas import TaskEdit, TaskCreate
 
 
 class TasksRepository:
@@ -45,4 +45,13 @@ class TasksRepository:
     def get_by_id(self, task_id: int) -> Task | None:
         return self.session.get(Task, task_id)
     
-    
+    def delete(self, task_id: int) -> bool:
+        task = self.session.get(Task, task_id)
+
+        if task is None:
+            return False
+        
+        self.session.delete(task)
+        self.session.commit()
+
+        return True

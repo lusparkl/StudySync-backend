@@ -1,7 +1,7 @@
-from app.schemas import NoteCreate, NoteEdit
 from app.models import Note
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from app.schemas import NoteEdit, NoteCreate
 
 class NotesRepository:
     def __init__(self, session: Session):
@@ -43,3 +43,14 @@ class NotesRepository:
     
     def get_by_id(self, note_id: int) -> Note | None:
         return self.session.get(Note, note_id)
+    
+    def delete(self, note_id: int) -> bool:
+        note = self.session.get(Note, note_id)
+
+        if note is None:
+            return False
+        
+        self.session.delete(note)
+        self.session.commit()
+
+        return True

@@ -1,16 +1,16 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import declarative_base, relationship, Mapped, mapped_column
 from __future__ import annotations
-from datetime import datetime
 
-Base = declarative_base()
+from datetime import datetime
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, relationship, mapped_column
+from app.database import Base
 
 class User(Base):
     __tablename__ = "users"
     
     user_id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(nullable=False)
-    email: Mapped[str] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(nullable=False, unique=True)
+    email: Mapped[str] = mapped_column(nullable=False, unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
     profile_photo_link: Mapped[str] = mapped_column(nullable=False)
 

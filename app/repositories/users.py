@@ -1,6 +1,8 @@
 from app.models import User
-from app.schemas import UserCreate, UserEdit
 from sqlalchemy.orm import Session
+from sqlalchemy import select
+from app.schemas import UserEdit, UserCreate
+from app.auth.helpers import hash_password
 
 class UsersRepository:
     def __init__(self, session: Session):
@@ -10,7 +12,7 @@ class UsersRepository:
         user = User(
             username=data.username,
             email=data.email,
-            hashed_password="change me", 
+            hashed_password=hash_password(data.password), 
             profile_photo_link="change me too" # Set default photo
         )
 
@@ -36,5 +38,10 @@ class UsersRepository:
 
         return user
     
-    def get_by_id(self, user_id) -> User | None:
+    def get_by_id(self, user_id: int) -> User | None:
         return self.session.get(User, user_id)
+
+
+    def get_by_email_or_username(self, login: str) -> User | None:
+        stm = select(User).where(User.email == login or User.username == login)
+        return self.session.scalar(stm)

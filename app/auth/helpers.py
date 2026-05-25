@@ -1,0 +1,38 @@
+import jwt
+from pwdlib import PasswordHash
+from datetime import datetime, timedelta, timezone
+from fastapi.security import OAuth2PasswordBearer
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
+
+def hash_password(password: str) -> str:
+    password_hash = PasswordHash.recommended()
+
+    return password_hash.hash(password)
+
+def verify_password(password: str, hash: str) -> bool:
+    password_hash = PasswordHash.recommended()
+
+    return password_hash.verify(password, hash)
+
+def create_access_token(user_id: int) -> str:
+    data = {
+        "sub": str(user_id),
+        "exp": datetime.now(timezone.utc) + timedelta(days=1)
+    }
+
+    return jwt.encode(data, SECRET_KEY, ALGORITHM) 
+    
+def decode_access_token(token: str) -> dict | None:
+    try:
+        return jwt.decode(token, SECRET_KEY, ALGORITHM)
+    except jwt.ExpiredSignatureError:
+        return None
+    

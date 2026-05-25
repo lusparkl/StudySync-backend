@@ -1,7 +1,7 @@
-from app.models import Workspace
-from app.schemas import WorkspaceCreate, WorkspaceEdit
 from sqlalchemy import select
+from app.models import Workspace
 from sqlalchemy.orm import Session
+from app.schemas import WorkspaceEdit, WorkspaceCreate
 
 class WorkspacesRepository:
     def __init__(self, session: Session):
@@ -12,7 +12,8 @@ class WorkspacesRepository:
             title=data.title,
             description=data.description,
             deadline=data.deadline,
-            owner_id = user_id
+            owner_id = user_id,
+            avatar_link = "change_me"
         )
 
         self.session.add(workspace)
@@ -39,4 +40,15 @@ class WorkspacesRepository:
     
     def get_by_user_id(self, user_id) -> list[Workspace]:
         stm = select(Workspace).where(Workspace.owner_id == user_id)
-        return self.session.scalar(stm).all()
+        return list(self.session.scalars(stm).all())
+    
+    def delete(self, workspace_id: int) -> bool:
+        workspace = self.session.get(Workspace, workspace_id)
+
+        if workspace is None:
+            return False
+        
+        self.session.delete(workspace)
+        self.session.commit()
+
+        return True
