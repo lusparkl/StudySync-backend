@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 from datetime import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.database import Base
+
+contributors = Table(
+    "workspace_members",
+    Base.metadata,
+    Column("user_id", ForeignKey("users.user_id"), primary_key=True),
+    Column("workspace_id", ForeignKey("workspaces.workspace_id"), primary_key=True)
+)
 
 class User(Base):
     __tablename__ = "users"
@@ -17,7 +24,7 @@ class User(Base):
     workspaces: Mapped[list[Workspace]] = relationship(back_populates="owner")
     tasks: Mapped[list[Task]] = relationship(back_populates="owner")
     notes: Mapped[list[Note]] = relationship(back_populates="owner")
-    shared_workspaces: Mapped[list[Workspace]] = relationship(back_populates="contributors")
+    shared_workspaces: Mapped[list[Workspace]] = relationship(secondary=contributors, back_populates="contributors")
 
 class Workspace(Base):
     __tablename__ = "workspaces"
@@ -30,7 +37,7 @@ class Workspace(Base):
 
     owner: Mapped[User] = relationship(back_populates="workspaces")
     tasks: Mapped[list[Task]] = relationship(back_populates="workspace")
-    contributors: Mapped[list[User]] = relationship(back_populates="shared_workspaces")
+    contributors: Mapped[list[User]] = relationship(secondary=contributors, back_populates="shared_workspaces")
 
 class Task(Base):
     __tablename__ = "tasks"

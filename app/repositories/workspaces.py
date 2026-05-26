@@ -13,7 +13,6 @@ class WorkspacesRepository:
             description=data.description,
             deadline=data.deadline,
             owner_id = user_id,
-            avatar_link = "change_me"
         )
 
         self.session.add(workspace)

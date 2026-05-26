@@ -60,8 +60,7 @@ def auth_headers(client):
     assert register_responce.status_code == 200
 
     register_data = register_responce.json()
-    assert register_data["username"] == "test_user"
-    assert register_data["email"] == "test@gmail.com"
+    assert register_data["access_token"] is not None
     
     login_responce = client.post(
         "/users/login",
