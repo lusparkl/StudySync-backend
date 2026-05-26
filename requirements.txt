@@ -1,7 +1,7 @@
 fastapi
 langchain
 uvicorn[standard]
-sqlalchemy[postgresql]
+sqlalchemy
 psycopg2
 pwdlib[argon2]
 pyjwt

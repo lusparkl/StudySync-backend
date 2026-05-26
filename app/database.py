@@ -6,7 +6,8 @@ from collections.abc import Generator
 
 
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL: str = os.getenv("DATABASE_URL")
+DATABASE_URL = DATABASE_URL.replace("postgres", "postgresql") # Heroku fix
 
 engine = create_engine(DATABASE_URL)
 
