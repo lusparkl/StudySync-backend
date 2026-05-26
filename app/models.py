@@ -12,7 +12,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
-    profile_photo_link: Mapped[str] = mapped_column(nullable=False)
+    profile_photo_link: Mapped[str] = mapped_column(nullable=False, default="https://images.lusparkl.foo/default_avatar.webp")
 
     workspaces: Mapped[list[Workspace]] = relationship(back_populates="owner")
     tasks: Mapped[list[Task]] = relationship(back_populates="owner")
@@ -26,7 +26,6 @@ class Workspace(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
     title: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=True)
-    avatar_link: Mapped[str] = mapped_column(nullable=False)
     deadline: Mapped[datetime] = mapped_column(nullable=True)
 
     owner: Mapped[User] = relationship(back_populates="workspaces")

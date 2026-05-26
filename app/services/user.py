@@ -53,3 +53,6 @@ class UserService:
         token = create_access_token(user.user_id)
         return {"access_token": token, "token_type": "bearer"}
 
+    def set_profile_photo_for_user(self, photo_url: str, user_id: int):
+        user = self._get_user_or_404(user_id)
+        return self.repository.set_user_photo_url(user_id, photo_url)

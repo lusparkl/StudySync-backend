@@ -42,3 +42,12 @@ class UsersRepository:
     def get_by_email_or_username(self, login: str) -> User | None:
         stm = select(User).where(or_(User.email == login, User.username == login))
         return self.session.scalar(stm)
+    
+    def set_user_photo_url(self, user_id: int, photo_url: str) -> User | None:
+        user = self.session.get(User, user_id)
+        user.profile_photo_link = photo_url
+
+        self.session.commit()
+        self.session.refresh(user)
+
+        return user

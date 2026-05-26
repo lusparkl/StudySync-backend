@@ -23,7 +23,7 @@ class UserEdit(BaseModel):
     username: str | None = None
     email: str | None = None
 
-class WorkspaceCreate(BaseModel): #You'll get owner id from jwt
+class WorkspaceCreate(BaseModel):
     title: str
     description: str | None = None
     deadline: datetime | None = None
@@ -33,7 +33,6 @@ class WorkspaceRead(WorkspaceCreate):
     
     workspace_id: int
     owner_id: int
-    avatar_link: str | None = None
     tasks: list[TaskRead] = []
     contributors: list[UserReadPublic] = []
 
@@ -42,7 +41,7 @@ class WorkspaceEdit(BaseModel):
     description: str | None = None
     deadline: datetime | None = None
 
-class TaskCreate(BaseModel): # You'll get owner id from jwt, and workspace id from the link params
+class TaskCreate(BaseModel): 
     title: str
     text: str | None = None
 
@@ -59,7 +58,7 @@ class TaskEdit(BaseModel):
     title: str | None = None
     text: str | None = None
 
-class NoteCreate(BaseModel): #owner id - jwt, task id - link
+class NoteCreate(BaseModel): 
     title: str
     text: str | None = None
 
