@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Response, status
 from app.repositories.tasks import TasksRepository
 from app.repositories.workspaces import WorkspacesRepository
 from app.schemas import TaskCreate, TaskEdit
@@ -56,4 +56,5 @@ class TaskService:
     def delete_task_for_user(self, workspace_id: int, user_id: int, task_id: int):
         self._get_task_or_404(task_id)
         self._is_workspace_allowed(workspace_id, user_id)
-        return self.task_repository.delete(task_id)
+        if self.task_repository.delete(task_id):
+            return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Response, status
 from app.repositories.workspaces import WorkspacesRepository
 from app.schemas import WorkspaceCreate, WorkspaceEdit
 
@@ -44,4 +44,5 @@ class WorkspacesService:
         workspace = self._get_workspace_or_404(workspace_id)
         self._check_is_user_allowed(workspace, user_id)
 
-        return self.workspace_repository.delete(workspace_id)
+        if self.workspace_repository.delete(workspace_id):
+            return Response(status_code=status.HTTP_204_NO_CONTENT)
