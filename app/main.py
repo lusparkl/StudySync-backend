@@ -7,7 +7,6 @@ from app.database import Base, engine
 from app import models #Need to create all tables
 
 app = FastAPI()
-Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 app.include_router(user_router)
@@ -15,6 +14,3 @@ app.include_router(workspace_router)
 app.include_router(task_router)
 app.include_router(note_router)
 
-@app.get("/favicon.ico", include_in_schema=False)
-def favicon():
-    return Response(status_code=204)
