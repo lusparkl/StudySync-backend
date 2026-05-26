@@ -35,6 +35,7 @@ class WorkspaceRead(WorkspaceCreate):
     owner_id: int
     avatar_link: str | None = None
     tasks: list[TaskRead] = []
+    contributors: list[UserReadPublic] = []
 
 class WorkspaceEdit(BaseModel):
     title: str | None = None
@@ -48,7 +49,7 @@ class TaskCreate(BaseModel): # You'll get owner id from jwt, and workspace id fr
 class TaskRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
-    id: int
+    task_id: int
     owner_id: int
     workspace_id: int
     title: str
@@ -65,7 +66,7 @@ class NoteCreate(BaseModel): #owner id - jwt, task id - link
 class NoteRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    note_id: int
     owner_id: int
     task_id: int
     title: str

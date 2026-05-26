@@ -7,6 +7,7 @@ from app.database import Base, engine
 from app import models #Need to create all tables
 
 app = FastAPI()
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 app.include_router(user_router)

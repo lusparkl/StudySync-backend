@@ -24,6 +24,10 @@ class NoteService():
         if workspace is None:
             raise HTTPException(status_code=404, detail="Workspace not found.")
         
+        for contributor in workspace.contributors:
+            if contributor.user_id == user_id:
+                return
+        
         if user_id != workspace.owner_id:
             raise HTTPException(status_code=403, detail="Not allowed.")
     

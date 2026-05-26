@@ -15,6 +15,10 @@ class WorkspacesService():
         return workspace
     
     def _check_is_user_allowed(self, workspace, user_id: int):
+        for contributor in workspace.contributors:
+            if contributor.user_id == user_id:
+                return
+        
         if user_id != workspace.owner_id:
             raise HTTPException(status_code=403, detail="Forbidden.")
         

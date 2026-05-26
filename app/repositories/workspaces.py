@@ -1,5 +1,5 @@
-from sqlalchemy import select
-from app.models import Workspace
+from sqlalchemy import select, or_
+from app.models import Workspace, User
 from sqlalchemy.orm import Session
 from app.schemas import WorkspaceEdit, WorkspaceCreate
 
@@ -39,7 +39,7 @@ class WorkspacesRepository:
         return workspace
     
     def get_by_user_id(self, user_id) -> list[Workspace]:
-        stm = select(Workspace).where(Workspace.owner_id == user_id)
+        stm = select(Workspace).where(or_(Workspace.owner_id == user_id, Workspace.contributors.any(User.user_id == user_id)))
         return list(self.session.scalars(stm).all())
     
     def get_by_id(self, workspace_id) -> Workspace | None:

@@ -16,6 +16,8 @@ class User(Base):
 
     workspaces: Mapped[list[Workspace]] = relationship(back_populates="owner")
     tasks: Mapped[list[Task]] = relationship(back_populates="owner")
+    notes: Mapped[list[Note]] = relationship(back_populates="owner")
+    shared_workspaces: Mapped[list[Workspace]] = relationship(back_populates="contributors")
 
 class Workspace(Base):
     __tablename__ = "workspaces"
@@ -29,6 +31,7 @@ class Workspace(Base):
 
     owner: Mapped[User] = relationship(back_populates="workspaces")
     tasks: Mapped[list[Task]] = relationship(back_populates="workspace")
+    contributors: Mapped[list[User]] = relationship(back_populates="shared_workspaces")
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -51,4 +54,5 @@ class Note(Base):
     title: Mapped[str] = mapped_column(nullable=False)
     text: Mapped[str] = mapped_column(nullable=True)
 
+    owner: Mapped[User] = relationship(back_populates="notes")
     task: Mapped[Task] = relationship(back_populates="notes")
