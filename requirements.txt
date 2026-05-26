@@ -5,3 +5,5 @@ sqlalchemy
 psycopg2
 pwdlib[argon2]
 pyjwt
+boto3
+python-dotenv
