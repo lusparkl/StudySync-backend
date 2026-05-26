@@ -29,7 +29,7 @@ class UserService:
         user = self._get_user_or_404(user_id)
         self._is_user_allowed(user, user_id)
 
-        self.repository.edit(data, user_id)
+        return self.repository.edit(data, user_id)
     
     def create_user_for_user(self, data: UserCreate):
         try:

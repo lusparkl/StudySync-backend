@@ -12,8 +12,7 @@ class UsersRepository:
         user = User(
             username=data.username,
             email=data.email,
-            hashed_password=hash_password(data.password), 
-            profile_photo_link="change me too" # Set default photo
+            hashed_password=hash_password(data.password)
         )
 
         self.session.add(user)
