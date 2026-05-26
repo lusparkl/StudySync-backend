@@ -19,7 +19,7 @@ def get_user(user_id: int, session: Session = Depends(get_session)):
     service = UserService(session)
     return service.get_user_for_user(user_id)
 
-@router.post("/", response_model=UserReadPrivate)
+@router.post("/")
 def create_user(data: UserCreate, session: Session = Depends(get_session)):
     service = UserService(session)
     return service.create_user_for_user(data)
