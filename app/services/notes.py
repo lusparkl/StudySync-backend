@@ -4,7 +4,7 @@ from app.repositories.notes import NotesRepository
 from app.repositories.tasks import TasksRepository
 from app.repositories.workspaces import WorkspacesRepository
 
-class NoteService():
+class NoteService:
     def __init__(self, session):
         self.notes_repository = NotesRepository(session)
         self.tasks_repository = TasksRepository(session)

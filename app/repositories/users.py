@@ -22,11 +22,8 @@ class UsersRepository:
 
         return user
     
-    def update(self, data: UserEdit, user_id: int) -> User | None:
+    def edit(self, data: UserEdit, user_id: int) -> User | None:
         user = self.session.get(User, user_id)
-
-        if user == None:
-            return None
         
         update_data = data.model_dump(exclude_unset=True)
 

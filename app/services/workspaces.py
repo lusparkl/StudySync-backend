@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from app.repositories.workspaces import WorkspacesRepository
 from app.schemas import WorkspaceCreate, WorkspaceEdit
 
-class WorkspacesService():
+class WorkspacesService:
     def __init__(self, session):
         self.workspace_repository = WorkspacesRepository(session)
     

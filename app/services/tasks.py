@@ -3,7 +3,7 @@ from app.repositories.tasks import TasksRepository
 from app.repositories.workspaces import WorkspacesRepository
 from app.schemas import TaskCreate, TaskEdit
 
-class TaskService():
+class TaskService:
     def __init__(self, session):
         self.task_repository = TasksRepository(session)
         self.workspace_repository = WorkspacesRepository(session)
