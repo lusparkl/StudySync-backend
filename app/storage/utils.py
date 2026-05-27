@@ -43,7 +43,7 @@ def validate_image_file(file: UploadFile) -> str:
     if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(status_code=400, detail="Invalid image type")
     
-    extension = Path(file.filename or "").suffix.lower
+    extension = Path(file.filename or "").suffix.lower()
 
     if extension not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail="Invalid file extension.")
