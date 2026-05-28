@@ -22,7 +22,7 @@ def test_task_retrieval(client, auth_headers):
     workspace_id = _create_workspace(client, auth_headers).json()["workspace_id"]
     task_id = _create_task(client, auth_headers, workspace_id).json()["task_id"]
 
-    response = client.get(f"/workspaces/{workspace_id}/tasks/{task_id}", headers=auth_headers)
+    response = client.get(f"/tasks/{task_id}", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert data["title"] == "Test task"
@@ -33,7 +33,7 @@ def test_task_editing(client, auth_headers):
     workspace_id = _create_workspace(client, auth_headers).json()["workspace_id"]
     task_id = _create_task(client, auth_headers, workspace_id).json()["task_id"]
 
-    response = client.patch(f"/workspaces/{workspace_id}/tasks/{task_id}",json={
+    response = client.patch(f"/tasks/{task_id}",json={
         "title": "Changed task title"
     }, headers=auth_headers)
     
@@ -44,8 +44,8 @@ def test_task_deletion(client, auth_headers):
     workspace_id = _create_workspace(client, auth_headers).json()["workspace_id"]
     task_id = _create_task(client, auth_headers, workspace_id).json()["task_id"]
 
-    response = client.delete(f"/workspaces/{workspace_id}/tasks/{task_id}", headers=auth_headers)
+    response = client.delete(f"/tasks/{task_id}", headers=auth_headers)
     assert response.status_code == 204
 
-    get_responce = client.get(f"/workspaces/{workspace_id}/tasks/{task_id}", headers=auth_headers)
+    get_responce = client.get(f"/tasks/{task_id}", headers=auth_headers)
     assert get_responce.status_code == 404
