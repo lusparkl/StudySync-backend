@@ -38,6 +38,11 @@ Authorization: Bearer <access_token>
 - GET /workspaces/{workspace_id} - Get some special workspace.
 - DELETE /workspaces/{workspace_id} - Delete workspace.
 
+### Invites
+
+- POST /workspaces/{workspace_id}/invites - Create invite link.
+- POST /invites/{invite_token} - Accept invite to workspace.
+
 ### Tasks
 
 - POST workspaces/{workspace_id}/tasks - Create task.
@@ -1147,5 +1152,90 @@ Status: `204 No Content`
 
 - Endpoint requires authentication.
 - Only note owner can delete note.
+
+---
+
+## POST /workspaces/{workspace_id}/invites
+
+Create invite link for workspace.
+
+### Auth
+
+Required: yes
+
+Header:
+
+~~~http
+Authorization: Bearer <access_token>
+~~~
+
+### URL Parameters
+
+- `workspace_id` (required): Workspace ID
+
+### Success response
+
+Status: `200 OK`
+
+~~~json
+{
+  "invite_link": "string"
+}
+~~~
+
+### Error responses
+
+| Status code | Meaning | Example reason |
+|---:|---|---|
+| 401 | Unauthorized | Missing or invalid token |
+| 403 | Forbidden | User does not have access to this workspace |
+| 404 | Not Found | Workspace does not exist |
+| 500 | Server Error | Unexpected backend error |
+
+### Notes
+
+- Endpoint requires authentication.
+- Only workspace owner can create invite links.
+- Invite link does not expire.
+
+---
+
+## POST /invites/{invite_token}
+
+Accept invite to workspace.
+
+### Auth
+
+Required: yes
+
+Header:
+
+~~~http
+Authorization: Bearer <access_token>
+~~~
+
+### URL Parameters
+
+- `invite_token` (required): Invite token from invite link
+
+### Success response
+
+Status: `200 OK`
+
+No response body
+
+### Error responses
+
+| Status code | Meaning | Example reason |
+|---:|---|---|
+| 400 | Bad Request | Invalid or expired invite token |
+| 401 | Unauthorized | Missing or invalid token |
+| 404 | Not Found | Workspace does not exist |
+| 500 | Server Error | Unexpected backend error |
+
+### Notes
+
+- Endpoint requires authentication.
+- Adds user as contributor to workspace if not already member.
 
 

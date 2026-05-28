@@ -27,3 +27,39 @@ def test_setting_profile_photo(client, auth_headers):
     data = response.json()
     assert data["profile_photo_link"] is not None
     assert data["profile_photo_link"] != "https://images.lusparkl.foo/default_avatar.webp"
+
+def test_deleting_profile_photo(client, auth_headers):
+    with open("tests/assets/test_photo_1.jpg", "rb") as image:
+        client.patch("/users/me/profile_picture", files={
+            "file": ("test_photo_1.jpg", image, "image/jpeg")
+            },
+            headers=auth_headers
+        )
+
+    response = client.delete("/users/me/profile_picture", headers=auth_headers)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["profile_photo_link"] == "https://images.lusparkl.foo/default_avatar.webp"
+
+def test_changing_user_password(client, auth_headers):
+    response = client.patch("/users/me/password", json={
+        "old_password": "test_password",
+        "new_password": "new_test_password"
+    }, headers=auth_headers)
+
+    assert response.status_code == 200
+
+    # Try to login with old password
+    login_response_old = client.post("/users/login", data={
+        "username": "test_user",
+        "password": "test_password"
+    })
+    assert login_response_old.status_code == 400
+
+    # Try to login with new password
+    login_response_new = client.post("/users/login", data={
+        "username": "test_user",
+        "password": "new_test_password"
+    })
+    assert login_response_new.status_code == 200

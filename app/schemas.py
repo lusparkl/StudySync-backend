@@ -23,6 +23,10 @@ class UserEdit(BaseModel):
     username: str | None = None
     email: str | None = None
 
+class UserEditPassword(BaseModel):
+    old_password: str
+    new_password: str
+
 class WorkspaceCreate(BaseModel):
     title: str
     description: str | None = None

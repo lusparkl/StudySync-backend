@@ -3,7 +3,9 @@ from app.repositories.users import UsersRepository
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas import UserCreate, UserEdit
 from sqlalchemy.exc import IntegrityError
-from app.auth.helpers import verify_password, create_access_token
+from app.auth.helpers import verify_password, create_access_token, hash_password
+
+
 
 class UserService:
     def __init__(self, session):
@@ -58,5 +60,15 @@ class UserService:
         return {"access_token": token, "token_type": "bearer"}
 
     def set_profile_photo_for_user(self, photo_url: str, user_id: int):
-        user = self._get_user_or_404(user_id)
+        self._get_user_or_404(user_id)
         return self.repository.set_user_photo_url(user_id, photo_url)
+
+    def change_user_password(self, user_id: int, old_password: str, new_password: str):
+        user = self._get_user_or_404(user_id)
+        
+        if not verify_password(old_password, user.hashed_password):
+            raise HTTPException(status_code=400, detail="Wrong old password.")
+        
+        new_password_hash = hash_password(new_password)
+        return self.repository.change_password_hash(user_id, new_password_hash)
+    

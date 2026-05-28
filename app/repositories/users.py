@@ -50,3 +50,12 @@ class UsersRepository:
         self.session.refresh(user)
 
         return user
+    
+    def change_password_hash(self, user_id: int, new_hash: str) -> User:
+        user = self.session.get(User, user_id)
+        user.hashed_password = new_hash
+
+        self.session.commit()
+        self.session.refresh(user)
+
+        return user
