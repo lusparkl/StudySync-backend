@@ -260,6 +260,39 @@ Status: `200 OK`
 
 ---
 
+## DELETE /users/me/profile_picture
+
+Delete user profile picture.
+
+### Auth
+
+Required: yes
+
+Header:
+
+~~~http
+Authorization: Bearer <access_token>
+~~~
+
+### Success response
+
+Status: `204 No Content`
+
+### Error responses
+
+| Status code | Meaning | Example reason |
+|---:|---|---|
+| 401 | Unauthorized | Missing or invalid token |
+| 404 | Not Found | User does not exist |
+| 500 | Server Error | Unexpected backend error |
+
+### Notes
+
+- Endpoint requires authentication.
+- Removes the profile picture from user account.
+
+---
+
 ## GET /users/me
 
 Get personal user information including email and workspaces.

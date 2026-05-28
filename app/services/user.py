@@ -29,8 +29,12 @@ class UserService:
         user = self._get_user_or_404(user_id)
         self._is_user_allowed(user, user_id)
 
-        return self.repository.edit(data, user_id)
-    
+        try:
+            return self.repository.edit(data, user_id)
+        except IntegrityError:
+            self.session.rollback()
+            raise HTTPException(status_code=409, detail="Email or username is already taken.") 
+
     def create_user_for_user(self, data: UserCreate):
         try:
             user = self.repository.create(data)

@@ -37,5 +37,10 @@ def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depend
 @router.patch("/me/profile_picture", response_model=UserReadPrivate)
 def set_profile_picture(file: UploadFile = File(...), session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
     service = UserService(session)
-    photo_link = upload_profile_photo(file, user_id)
+    photo_link = upload_profile_photo(file, user_id, service.get_user_for_user(user_id).photo_url)
     return service.set_profile_photo_for_user(photo_link, user_id)
+
+@router.delete("/me/profile_picture", response_model=UserReadPrivate)
+def delete_profile_picture(session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
+    service = UserService(session)
+    return service.set_profile_photo_for_user("https://images.lusparkl.foo/default_avatar.webp", user_id)
