@@ -8,3 +8,6 @@ pyjwt
 boto3
 python-dotenv
 python-multipart
+requests
+pymupdf4llm
+langgraph
