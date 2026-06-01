@@ -23,9 +23,13 @@ def get_books_ids(query: str) -> list[str]:
     }
     
     response = requests.get(url, params)
-    
+    data = response.json()
+
+    if "items" not in data.keys():
+        return []
+
     books_ids = []
-    for book in response.json()["items"]:
+    for book in data["items"]:
         book_id = book["id"]
         if book_id:
             books_ids.append(book_id)
@@ -40,12 +44,12 @@ def get_book_information(id: str) -> Book:
     response = requests.get(url, params)
     
     data = response.json()
-    book_url = data["infoLink"]
+    book_url = data["volumeInfo"]["infoLink"]
     title = data["volumeInfo"]["title"]
-    description = data["description"]
+    description = data["volumeInfo"]["description"]
     authors = data["volumeInfo"]["authors"]
-    pages_count = data["pagesCount"]
-    published_date = data["publishedDate"]
+    pages_count = data["volumeInfo"]["pageCount"]
+    published_date = data["volumeInfo"]["publishedDate"]
 
     return Book(book_url, title, description, authors, pages_count, published_date)
 
