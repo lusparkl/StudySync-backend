@@ -11,3 +11,4 @@ python-multipart
 requests
 pymupdf4llm
 langgraph
+exa-py
