@@ -10,7 +10,7 @@
 
 *A powerful, AI-enhanced collaborative learning platform backend*
 
-[Features](#-features) • [Quick Start](#-quick-start) • [API Docs](#-api-documentation) • [Architecture](#-architecture)
+[Features](#-features) • [Quick Start](#-quick-start) • [API Docs](#-api-documentation)
 
 </div>
 
@@ -21,45 +21,45 @@
 StudySync is my personal project, intendet to learn how to build real api's and also how to build powerful ai agents, not just chatGPT wrappers. Created for hack club horizons btw!
 
 ### 🎯 Key Highlights
-- 🔐 **JWT Authentication** - Secure token-based user authentication
-- 👥 **Workspace Collaboration** - Create shared workspaces with invite-based access
-- 📝 **Smart Task & Note Management** - Organize your study materials hierarchically
-- 🤖 **AI Integration** - Create study plan with ai, it searches for the resources and best way to learn any topic!
-- 📸 **Profile Management** - Upload and manage user profile pictures with S3 storage
-- 🚀 **Production Ready** - Deployed on Heroku with PostgreSQL backend
+-  **JWT Authentication** - Secure token-based user authentication
+-  **Workspace Collaboration** - Create shared workspaces with invite-based access
+-  **Smart Task & Note Management** - Organize your study materials hierarchically
+-  **AI Integration** - Create study plan with ai, it searches for the resources and best way to learn any topic!
+-  **Profile Management** - Upload and manage user profile pictures with S3 storage
+-  **Production Ready** - Deployed on Heroku with PostgreSQL backend
 
 ---
 
 ## 🎯 Features
 
 ### 🔑 Authentication & Authorization
-- ✅ User registration and login with JWT tokens
-- ✅ Secure password hashing with Argon2
-- ✅ Token-based API authorization
-- ✅ User profile management and editing
+- [x] User registration and login with JWT tokens
+- [x] Secure password hashing with Argon2
+- [x] Token-based API authorization
+- [x] User profile management and editing
 
 ### 🛠️ Workspace Management
-- ✅ Create and manage multiple workspaces
-- ✅ Invite-based collaboration system
-- ✅ Share workspaces with team members
-- ✅ Full CRUD operations on workspaces
+- [x] Create and manage multiple workspaces
+- [x] Invite-based collaboration system
+- [x] Share workspaces with team members
+- [x] Full CRUD operations on workspaces
 
 ### 📋 Task & Note System
-- ✅ Hierarchical task organization
-- ✅ Attach multiple notes to tasks
-- ✅ Edit and delete tasks/notes
-- ✅ Workspace-based task filtering
+- [x] Hierarchical task organization
+- [x] Attach multiple notes to tasks
+- [x] Edit and delete tasks/notes
+- [x] Workspace-based task filtering
 
 ### 🧠 AI-Powered Search
-- ✅ **YouTube Search** - Find educational videos
-- ✅ **Web Search** - Search across the internet
-- ✅ **Book Search** - Search and extract PDF content
-- ❌ **AI Study Planning** - Still working on this one
+- [x] **YouTube Search** - Find educational videos
+- [x] **Web Search** - Search across the internet
+- [x] **Book Search** - Search and extract PDF content
+- [x] **AI Study Planning** - Still working on this one
 
 ### 📸 Storage & Media
-- ✅ AWS S3 integration for profile photos
-- ✅ Secure file upload management
-- ✅ Optimized media storage utilities
+- [x] AWS S3 integration for profile photos
+- [x] Secure file upload management
+- [x] Optimized media storage utilities
 
 ---
 
@@ -116,22 +116,22 @@ The API will be available at `http://localhost:8000`
 
 ## 📖 API Documentation
 
-### 🌐 Base URLs
+###  Base URLs
 - **Local Development**: `http://localhost:8000`
 - **Production**: `https://studysync-1930c1223599.herokuapp.com/`
 
-### 📚 Interactive API Docs
+###  Interactive API Docs
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 
-### 🔐 Authentication
+###  Authentication
 Most endpoints require JWT Bearer token authentication:
 
 ```
 Header: Authorization: Bearer <access_token>
 ```
 
-### 📋 Available Endpoints
+###  Available Endpoints
 
 | Category | Method | Endpoint | Description |
 |----------|--------|----------|-------------|
