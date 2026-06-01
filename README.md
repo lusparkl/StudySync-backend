@@ -54,7 +54,7 @@ StudySync is my personal project, intendet to learn how to build real api's and 
 - [x] **YouTube Search** - Find educational videos
 - [x] **Web Search** - Search across the internet
 - [x] **Book Search** - Search and extract PDF content
-- [x] **AI Study Planning** - Still working on this one
+- [ ] **AI Study Planning** - Still working on this one
 
 ### 📸 Storage & Media
 - [x] AWS S3 integration for profile photos
