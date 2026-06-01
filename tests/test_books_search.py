@@ -15,3 +15,15 @@ def test_getting_book_info_positive():
 
     assert isinstance(book, Book)
     assert book.title == "The Google Story (2018 Updated Edition)"
+
+def test_getting_books_info_positive():
+    books = get_books_info_by_query("Programming")
+
+    assert len(books) == 5
+    for book in books:
+        assert isinstance(book, Book)
+
+def test_getting_books_info_negative():
+    books = get_books_info_by_query("Total fucking boolshit absolute nightmare no books")
+
+    assert books == []

@@ -42,14 +42,15 @@ def get_book_information(id: str) -> Book:
         "key": GOOGLE_API_TOKEN
     }
     response = requests.get(url, params)
-    
+
+
     data = response.json()
     book_url = data["volumeInfo"]["infoLink"]
     title = data["volumeInfo"]["title"]
-    description = data["volumeInfo"]["description"]
-    authors = data["volumeInfo"]["authors"]
-    pages_count = data["volumeInfo"]["pageCount"]
-    published_date = data["volumeInfo"]["publishedDate"]
+    description = data["volumeInfo"].get("description", "No description.")
+    authors = data["volumeInfo"].get("authors", "No authors signed.")
+    pages_count = data["volumeInfo"].get("pageCount", 0)
+    published_date = data["volumeInfo"].get("publishedDate", "No published date.")
 
     return Book(book_url, title, description, authors, pages_count, published_date)
 

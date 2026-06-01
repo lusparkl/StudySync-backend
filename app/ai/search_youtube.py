@@ -50,7 +50,7 @@ def get_video_information(id: str) -> Video:
     description = data["snippet"]["description"]
     video_url = f"https://www.youtube.com/watch?v={id}"
     duration = isodate.parse_duration(data["contentDetails"]["duration"])
-    views_count = data["statistics"]["viewCount"]
+    views_count = int(data["statistics"]["viewCount"])
 
     return Video(video_url, title, description, duration, views_count)
 
