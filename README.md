@@ -8,7 +8,7 @@
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-d94e0b?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-*A powerful, AI-enhanced collaborative learning platform backend*
+*Platform to make your study both enjoyable and effective*
 
 [Features](#-features) • [Quick Start](#-quick-start) • [API Docs](#-api-documentation)
 
@@ -18,21 +18,21 @@
 
 ## ✨ Overview
 
-StudySync is my personal project, intendet to learn how to build real api's and also how to build powerful ai agents, not just chatGPT wrappers. Created for hack club horizons btw!
+StudySync is my personal project, intendet to learn how to build real api's and also how to build powerful ai agents, not just chatGPT wrappers. Created for hack club horizons!
 
-### 🎯 Key Highlights
+###  Key Highlights
 -  **JWT Authentication** - Secure token-based user authentication
--  **Workspace Collaboration** - Create shared workspaces with invite-based access
--  **Smart Task & Note Management** - Organize your study materials hierarchically
+-  **Workspace Collaboration** - Create shared workspaces to study with your friends
+-  **Smart Task & Note Management** - Organize your study plans easily
 -  **AI Integration** - Create study plan with ai, it searches for the resources and best way to learn any topic!
 -  **Profile Management** - Upload and manage user profile pictures with S3 storage
--  **Production Ready** - Deployed on Heroku with PostgreSQL backend
+-  **Production Ready** - You can deploy it to the heroku with few clicks!
 
 ---
 
-## 🎯 Features
+##  Features
 
-### 🔑 Authentication & Authorization
+###  Authentication & Authorization
 - [x] User registration and login with JWT tokens
 - [x] Secure password hashing with Argon2
 - [x] Token-based API authorization
@@ -118,92 +118,14 @@ The API will be available at `http://localhost:8000`
 
 ###  Base URLs
 - **Local Development**: `http://localhost:8000`
-- **Production**: `https://studysync-1930c1223599.herokuapp.com/`
 
 ###  Interactive API Docs
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 
-###  Authentication
-Most endpoints require JWT Bearer token authentication:
-
-```
-Header: Authorization: Bearer <access_token>
-```
-
-###  Available Endpoints
-
-| Category | Method | Endpoint | Description |
-|----------|--------|----------|-------------|
-| **Users** | POST | `/users` | Create new user |
-| | POST | `/users/login` | Login user |
-| | PATCH | `/users` | Update user profile |
-| | PATCH | `/users/me/profile_picture` | Upload profile picture |
-| | GET | `/users/me` | Get current user info |
-| | GET | `/users/{user_id}` | Get public user info |
-| **Workspaces** | POST | `/workspaces` | Create workspace |
-| | PATCH | `/workspaces/{workspace_id}` | Update workspace |
-| | GET | `/workspaces` | List user workspaces |
-| | GET | `/workspaces/{workspace_id}` | Get workspace details |
-| | DELETE | `/workspaces/{workspace_id}` | Delete workspace |
-| **Invites** | POST | `/workspaces/{workspace_id}/invites` | Create invite |
-| | POST | `/invites/{invite_token}` | Accept invite |
-| **Tasks** | POST | `/workspaces/{workspace_id}/tasks` | Create task |
-| | PATCH | `/tasks/{task_id}` | Update task |
-| | GET | `/workspaces/{workspace_id}/tasks` | List tasks |
-| | GET | `/tasks/{task_id}` | Get task details |
-| | DELETE | `/tasks/{task_id}` | Delete task |
-| **Notes** | POST | `/tasks/{task_id}/notes` | Create note |
-| | PATCH | `/notes/{note_id}` | Update note |
-| | GET | `/tasks/{task_id}/notes` | List notes |
-| | GET | `/notes/{note_id}` | Get note details |
-| | DELETE | `/notes/{note_id}` | Delete note |
-
 👉 **Full API documentation**: See [API.md](API.md)
 
 ---
-
-## 🏗️ Architecture
-
-### Project Structure
-```
-StudySync-backend/
-├── app/
-│   ├── main.py              # FastAPI app initialization
-│   ├── database.py          # Database configuration
-│   ├── models.py            # SQLAlchemy models
-│   ├── schemas.py           # Pydantic schemas
-│   ├── ai/                  # AI search modules
-│   │   ├── search_books.py
-│   │   ├── search_web.py
-│   │   └── search_youtube.py
-│   ├── auth/                # Authentication logic
-│   │   ├── authentication.py
-│   │   ├── helpers.py
-│   │   └── invites.py
-│   ├── repositories/        # Data access layer
-│   │   ├── notes.py
-│   │   ├── tasks.py
-│   │   ├── users.py
-│   │   └── workspaces.py
-│   ├── routers/             # API route handlers
-│   │   ├── note.py
-│   │   ├── task.py
-│   │   ├── user.py
-│   │   └── workspace.py
-│   ├── services/            # Business logic layer
-│   │   ├── notes.py
-│   │   ├── tasks.py
-│   │   ├── user.py
-│   │   └── workspaces.py
-│   └── storage/             # File storage utilities
-│       ├── profile_photos.py
-│       └── utils.py
-├── tests/                   # Test suite
-├── requirements.txt         # Python dependencies
-├── pyproject.toml          # Project configuration
-└── README.md               # This file
-```
 
 ### Technology Stack
 - **Framework**: FastAPI - Modern, fast web framework for building APIs
@@ -218,67 +140,9 @@ StudySync-backend/
 - **File Processing**: PyMuPDF4LLM - PDF extraction and processing
 
 ---
+### How to contribute
 
-## 🧪 Testing
-
-Run the test suite:
-```bash
-pytest                                  # Run all tests
-pytest tests/test_users.py             # Run specific test file
-pytest tests/test_notes.py -v          # Verbose output
-pytest --cov=app                       # With coverage
-```
-
-Current test coverage includes:
-- ✅ User authentication and management
-- ✅ Workspace operations
-- ✅ Task management
-- ✅ Note operations
-- ✅ AI search capabilities (YouTube, web, books)
-
----
-
-## 🌟 Usage Examples
-
-### Register & Login
-```python
-import requests
-
-# Register
-response = requests.post('http://localhost:8000/users', json={
-    'username': 'john_doe',
-    'email': 'john@example.com',
-    'password': 'secure_password'
-})
-token = response.json()['access_token']
-
-# Use token for subsequent requests
-headers = {'Authorization': f'Bearer {token}'}
-```
-
-### Create Workspace
-```python
-workspace = requests.post(
-    'http://localhost:8000/workspaces',
-    json={'name': 'Python Study Group'},
-    headers=headers
-).json()
-```
-
-### Create Task & Notes
-```python
-task = requests.post(
-    f'http://localhost:8000/workspaces/{workspace["id"]}/tasks',
-    json={'title': 'Learn FastAPI', 'description': 'Complete the official tutorial'},
-    headers=headers
-).json()
-
-note = requests.post(
-    f'http://localhost:8000/tasks/{task["id"]}/notes',
-    json={'content': 'Watched first 3 chapters'},
-    headers=headers
-).json()
-```
+I'll be really happy if you want to contribute to the project. Crete pull requests with detailed descriptoin of what you added and after testing it I'll definetly merge it! Feel free to add new features or to fix existing ones.
 
 ---
 
@@ -317,7 +181,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-### Made with ❤️ by a passionate developer
+### Made with ❤️ 
 
 [⬆ Back to top](#-studysync-backend)
 

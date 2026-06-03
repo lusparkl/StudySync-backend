@@ -1,5 +1,5 @@
 fastapi
-langchain
+langchain-openai
 uvicorn[standard]
 sqlalchemy
 psycopg2
