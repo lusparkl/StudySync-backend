@@ -10,11 +10,11 @@ class UsersRepository:
     
     def create(self, data: UserCreate) -> User:
         user = User(
-            username=data.username,
-            email=data.email,
-            hashed_password=hash_password(data.password)
+            username = data.username,
+            email = data.email,
+            hashed_password = hash_password(data.password) if data.password else None
         )
-
+    
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)

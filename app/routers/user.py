@@ -34,11 +34,6 @@ def edit_user_password(data: UserEditPassword, session: Session = Depends(get_se
     service = UserService(session)
     return service.change_user_password(user_id, data.old_password, data.new_password)
 
-@router.post("/login")
-def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
-    service = UserService(session)
-    return service.login_user(data)
-
 @router.patch("/me/profile_picture", response_model=UserReadPrivate)
 def set_profile_picture(file: UploadFile = File(...), session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
     service = UserService(session)

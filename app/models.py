@@ -18,7 +18,7 @@ class User(Base):
     user_id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
-    hashed_password: Mapped[str] = mapped_column(nullable=False)
+    hashed_password: Mapped[str] = mapped_column(nullable=True)
     profile_photo_link: Mapped[str] = mapped_column(nullable=False, default="https://images.lusparkl.foo/default_avatar.webp")
 
     workspaces: Mapped[list[Workspace]] = relationship(back_populates="owner")

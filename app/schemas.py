@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class UserCreate(BaseModel):
     username: str
     email: str
-    password: str
+    password: str | None = None
     
 class UserReadPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)

@@ -47,7 +47,15 @@ class UserService:
         token = create_access_token(user.user_id)
         return {"access_token": token, "token_type": "bearer"}
 
-    
+    def create_user_for_service_login_user(self, data: UserCreate):
+        try:
+            user = self.repository.create(data)
+        except IntegrityError:
+            self.session.rollback()
+            raise HTTPException(status_code=409, detail="Email or username is already taken.")
+        
+        return create_access_token(user.user_id)
+
     def login_user(self, data: OAuth2PasswordRequestForm):
         user = self.repository.get_by_email_or_username(data.username)
         if user is None:
@@ -58,6 +66,13 @@ class UserService:
 
         token = create_access_token(user.user_id)
         return {"access_token": token, "token_type": "bearer"}
+    
+    def get_user_by_email(self, email):
+        return self.repository.get_by_email_or_username(email)
+    
+    def get_token_for_service_login_user(self, user):
+        return create_access_token(user.user_id)
+        
 
     def set_profile_photo_for_user(self, photo_url: str, user_id: int):
         self._get_user_or_404(user_id)
