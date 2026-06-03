@@ -8,7 +8,7 @@
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-d94e0b?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-*Platform to make your study both enjoyable and effective*
+*Platform to make your studies both enjoyable and effective*
 
 [Features](#-features) • [Quick Start](#-quick-start) • [API Docs](#-api-documentation)
 
