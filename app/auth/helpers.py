@@ -15,12 +15,15 @@ ALGORITHM = os.getenv("ALGORITHM")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
-config_data = {"GOOGLE_CLIENT_ID": GOOGLE_CLIENT_ID, "GOOGLE_CLIENT_SECRET": GOOGLE_CLIENT_SECRET}
-starlete_config = Config(environ=config_data)
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
 
-oauth = OAuth(starlete_config)
+google_config_data = {"GOOGLE_CLIENT_ID": GOOGLE_CLIENT_ID, "GOOGLE_CLIENT_SECRET": GOOGLE_CLIENT_SECRET}
+google_starlete_config = Config(environ=google_config_data)
 
-oauth.register(
+google_oauth = OAuth(google_starlete_config)
+
+google_oauth.register(
     name = "google",
     server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration",
     client_kwargs={"scope": "openid email profile"}
