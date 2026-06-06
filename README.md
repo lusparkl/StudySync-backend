@@ -6,6 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.14-3776ab?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-d94e0b?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
+[![OAuth](https://img.shields.io/badge/OAuth_2.0-Bearer-000000?style=for-the-badge)](https://oauth.net/2/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 *Platform to make your studies both enjoyable and effective*
@@ -22,6 +23,7 @@ StudySync is my personal project, intendet to learn how to build real api's and 
 
 ###  Key Highlights
 -  **JWT Authentication** - Secure token-based user authentication
+- **OAuth 2.0 Authentication** - You can use Google/Github account for the authentication!
 -  **Workspace Collaboration** - Create shared workspaces to study with your friends
 -  **Smart Task & Note Management** - Organize your study plans easily
 -  **AI Integration** - Create study plan with ai, it searches for the resources and best way to learn any topic!
@@ -37,6 +39,7 @@ StudySync is my personal project, intendet to learn how to build real api's and 
 - [x] Secure password hashing with Argon2
 - [x] Token-based API authorization
 - [x] User profile management and editing
+- [x] Auth with external services(Google, Github)
 
 ### 🛠️ Workspace Management
 - [x] Create and manage multiple workspaces

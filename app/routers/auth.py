@@ -1,12 +1,12 @@
 from app.database import get_session
 from sqlalchemy.orm import Session
-from fastapi import Depends, APIRouter, Request
+from fastapi import Depends, APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse
 from app.services.user import UserService
 from fastapi.security import OAuth2PasswordRequestForm
-from app.auth.helpers import google_oauth, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
+from app.auth.helpers import google_oauth, GITHUB_CLIENT_ID
+from app.auth.github import get_github_user_info
 from app.schemas import UserCreate
-import requests
 
 
 
@@ -24,9 +24,15 @@ async def login_google(request: Request):
 
 @router.get("/callback/google")
 async def auth_google(request: Request, session: Session = Depends(get_session)):
-    token = await google_oauth.google.authorize_access_token(request)
+    try:
+        token = await google_oauth.google.authorize_access_token(request)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Google authentication failed")
 
-    user_info = token["userinfo"]
+    user_info = token.get("userinfo")
+    if not user_info:
+        raise HTTPException(status_code=400, detail="Failed to get user info from Google")
+
     service = UserService(session)
 
     existing_user = service.get_user_by_email(user_info["email"])
@@ -40,37 +46,19 @@ async def auth_google(request: Request, session: Session = Depends(get_session))
 
 @router.get("/github")
 async def login_github(request: Request):
-    return RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&scope=read:user%20user:email&redirect_url=http://127.0.0.1:8000/login/callback/github")
+    return RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&scope=read:user%20user:email&redirect_uri=http://127.0.0.1:8000/login/callback/github")
 
 @router.get("/callback/github")
-async def auth_github(code: str, session: Session = Depends(get_session)):
-    url = "https://github.com/login/oauth/access_token"
-    
-    params = {
-        "client_id": GITHUB_CLIENT_ID,
-        "client_secret": GITHUB_CLIENT_SECRET,
-        "code": code,
-        "redirect_url": "http://127.0.0.1:8000/login/callback/github"
-    }
-    response = requests.get(url, params, headers={"Accept": "application/json"})
-
-    token = response.json()["access_token"]
-
-    url = "https://api.github.com/user"
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
-    response = requests.get(url, headers=headers)
-    
-    user_data = response.json()
+def auth_github(code: str, session: Session = Depends(get_session)):
+    user_data = get_github_user_info(code)
     service = UserService(session)
 
-    user_email = user_data["email"] if user_data["email"] else user_data["login"]
+    user_email = user_data.get("email") or user_data.get("login")
     existing_user = service.get_user_by_email(user_email)
     
     if existing_user:
         token = service.get_token_for_service_login_user(existing_user)
     else:
-        token = service.create_user_for_service_login_user(UserCreate(user_data["login"], user_email))
+        token = service.create_user_for_service_login_user(UserCreate(username=user_data.get("login", "github_user"), email=user_email))
     
     return RedirectResponse(f"http://127.0.0.1:8000?access_token={token}")

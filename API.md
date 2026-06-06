@@ -25,6 +25,10 @@ Authorization: Bearer <access_token>
 ### Users
 - POST /users - Create user.
 - POST /users/login - Login user.
+- GET /login/google - Redirect to Google OAuth consent screen.
+- GET /login/callback/google - Google OAuth callback.
+- GET /login/github - Redirect to Github OAuth consent screen.
+- GET /login/callback/github - Github OAuth callback.
 - PATCH /users - Edit user.
 - PATCH /users/me/profile_picture - Set user profile picture.
 - GET /users/me - Get personal user information.
@@ -152,6 +156,87 @@ Status: `200 OK`
 - Make sure that content type is x-www-form-urlencoded.
 - We can login user either by email or username.
 - JWT tocen expires every 10 days.
+
+---
+
+## GET /login/google
+
+Redirects the user to the Google OAuth consent screen. 
+
+### Auth
+
+Required: no
+
+### Success response
+
+Status: `307 Temporary Redirect` (redirects to Google)
+
+---
+
+## GET /login/callback/google
+
+Handles the callback from Google OAuth. Exchanges the authorization code for user info and logs in or registers the user.
+
+### Auth
+
+Required: no
+
+### Query Parameters
+
+- `code` (str): Authorization code returned by Google.
+- `state` (str, optional): State parameter for CSRF protection.
+
+### Success response
+
+Status: `307 Temporary Redirect` (redirects to your frontend URL with access token)
+
+Location: `http://127.0.0.1:8000?access_token=<access_token>`
+
+### Error responses
+
+| Status code | Meaning | Example reason |
+|---:|---|---|
+| 400 | Bad Request | Google authentication failed or user info not retrievable |
+
+---
+
+## GET /login/github
+
+Redirects the user to the GitHub OAuth consent screen.
+
+### Auth
+
+Required: no
+
+### Success response
+
+Status: `307 Temporary Redirect` (redirects to GitHub)
+
+---
+
+## GET /login/callback/github
+
+Handles the callback from GitHub OAuth. Exchanges the authorization code for an access token, fetches user info, and logs in or registers the user.
+
+### Auth
+
+Required: no
+
+### Query Parameters
+
+- `code` (str): Authorization code returned by GitHub.
+
+### Success response
+
+Status: `307 Temporary Redirect` (redirects to your frontend URL with access token)
+
+Location: `http://127.0.0.1:8000?access_token=<access_token>`
+
+### Error responses
+
+| Status code | Meaning | Example reason |
+|---:|---|---|
+| 400 | Bad Request | GitHub OAuth error or failed to retrieve access token |
 
 ---
 
