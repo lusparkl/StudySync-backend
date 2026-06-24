@@ -29,6 +29,18 @@ def test_task_retrieval(client, auth_headers):
     assert data["text"] == "Test task text"
     assert isinstance(data["task_id"], int)
 
+def test_getting_workspace_tasks(client, auth_headers):
+    workspace_id = _create_workspace(client, auth_headers).json()["workspace_id"]
+    _create_task(client, auth_headers, workspace_id)
+    _create_task(client, auth_headers, workspace_id)
+
+    response = client.get(f"/workspaces/{workspace_id}/tasks", headers=auth_headers)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert len(data) == 2
+    assert data[0]["title"] == "Test task"
+
 def test_task_editing(client, auth_headers):
     workspace_id = _create_workspace(client, auth_headers).json()["workspace_id"]
     task_id = _create_task(client, auth_headers, workspace_id).json()["task_id"]

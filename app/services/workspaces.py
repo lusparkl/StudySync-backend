@@ -1,6 +1,7 @@
 from fastapi import HTTPException, Response, status
 from app.repositories.workspaces import WorkspacesRepository
 from app.schemas import WorkspaceCreate, WorkspaceEdit
+from app.auth.invites import create_invite_token, encode_invite_token
 
 class WorkspacesService:
     def __init__(self, session):
@@ -46,3 +47,25 @@ class WorkspacesService:
 
         if self.workspace_repository.delete(workspace_id):
             return Response(status_code=status.HTTP_204_NO_CONTENT)
+        
+    def create_invite_link_for_user(self, user_id: int, workspace_id: int):
+        workspace = self._get_workspace_or_404(workspace_id)
+
+        if workspace.owner_id != user_id:
+            raise HTTPException(status_code=403, detail="Forbidden.")
+        
+        token = create_invite_token(workspace_id)
+
+        return {"invite_link": token}
+    
+    def accept_invite_link_for_user(self, user_id: int, invite_token: str):
+        try:
+            data = encode_invite_token(invite_token)
+            workspace_id = data["workspace_id"]
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid invite token.")
+        
+        workspace = self._get_workspace_or_404(workspace_id)
+        self.workspace_repository.add_contributor(workspace.workspace_id, user_id)
+
+        return {"message": "Invite accepted."}

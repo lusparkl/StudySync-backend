@@ -54,3 +54,23 @@ class WorkspacesRepository:
         self.session.commit()
 
         return True
+    
+    def add_contributor(self, workspace_id: int, user_id: int) -> Workspace | None:
+        workspace = self.session.get(Workspace, workspace_id)
+        user = self.session.get(User, user_id)
+
+        if workspace is None or user is None:
+            return None
+        
+        if workspace.owner_id == user_id:
+            return workspace
+        
+        for contributor in workspace.contributors:
+            if contributor.user_id == user_id:
+                return workspace
+        
+        workspace.contributors.append(user)
+        self.session.commit()
+        self.session.refresh(workspace)
+
+        return workspace

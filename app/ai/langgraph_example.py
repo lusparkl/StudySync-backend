@@ -11,7 +11,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 
 load_dotenv()
 
-llm = init_chat_model("openai:gpt-4.1-mini")
+llm = init_chat_model("gpt-4o-mini", model_provider="openai")
 
 class IntentClassifier(BaseModel):
     message_intent: Literal["chat", "knowledge", "fun"] = Field(..., description="Classify whether the user wants to just chat, ask for knowledge or have fun.")

@@ -7,6 +7,19 @@ def _create_workspace(client, auth_headers, title: str = "Test workspace", descr
     },
     headers=auth_headers)
 
+def _create_user_headers(client, username: str, email: str):
+    responce = client.post("/users", json={
+        "username": username,
+        "email": email,
+        "password": "test_password"
+    })
+
+    assert responce.status_code == 200
+
+    return {
+        "Authorization": f"Bearer {responce.json()['access_token']}"
+    }
+
 def test_workspace_creation(client, auth_headers):
     responce = client.post("/workspaces", json={
         "title": "Test workspace",
@@ -78,3 +91,24 @@ def test_deleting_workspace(client, auth_headers):
 
     get_responce = client.get(f"/workspaces/{workspace_id}", headers=auth_headers)
     assert get_responce.status_code == 404
+
+def test_workspace_invite_accepting(client, auth_headers):
+    create_responce = _create_workspace(client, auth_headers)
+    workspace_id = create_responce.json()["workspace_id"]
+    second_user_headers = _create_user_headers(client, "second_user", "second@gmail.com")
+
+    invite_responce = client.post(f"/workspaces/{workspace_id}/invites", headers=auth_headers)
+    assert invite_responce.status_code == 200
+
+    invite_link = invite_responce.json()["invite_link"]
+    assert isinstance(invite_link, str)
+
+    accept_responce = client.post(f"/invites/{invite_link}", headers=second_user_headers)
+    assert accept_responce.status_code == 200
+
+    workspace_responce = client.get(f"/workspaces/{workspace_id}", headers=second_user_headers)
+    assert workspace_responce.status_code == 200
+
+    workspace = workspace_responce.json()
+    assert workspace["workspace_id"] == workspace_id
+    assert workspace["contributors"][0]["username"] == "second_user"

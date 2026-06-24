@@ -44,7 +44,7 @@ class TaskService:
         return task
     
     def get_tasks_for_user(self, workspace_id: int, user_id: int):
-        self._is_workspace_allowed(user_id, workspace_id)
+        self._is_workspace_allowed(user_id, workspace_id=workspace_id)
         return self.task_repository.get_by_workspace_id(workspace_id)
     
     def create_task_for_user(self, workspace_id: int, user_id: int, data: TaskCreate):

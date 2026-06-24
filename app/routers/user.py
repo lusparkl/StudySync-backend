@@ -24,6 +24,11 @@ def create_user(data: UserCreate, session: Session = Depends(get_session)):
     service = UserService(session)
     return service.create_user_for_user(data)
 
+@router.post("/login")
+def login_user(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+    service = UserService(session)
+    return service.login_user(data)
+
 @router.patch("/", response_model=UserReadPrivate)
 def edit_user(data: UserEdit, session: Session = Depends(get_session), user_id: int = Depends(get_current_user_id)):
     service = UserService(session)
