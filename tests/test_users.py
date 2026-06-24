@@ -1,4 +1,12 @@
 from tests.conftest import client, auth_headers
+from app.storage import profile_photos
+
+def test_profile_photo_url_building_does_not_duplicate_slash(monkeypatch):
+    monkeypatch.setattr(profile_photos, "PUBLIC_ENDPOINT", "https://images.example.com/")
+
+    url = profile_photos.build_profile_photo_url("avatar.webp")
+
+    assert url == "https://images.example.com/avatar.webp"
 
 def test_getting_me(client, auth_headers):
     resonse = client.get("/users/me", headers=auth_headers)

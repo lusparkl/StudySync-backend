@@ -6,12 +6,15 @@ import { differenceInCalendarDays, isValid, parseISO } from 'date-fns'
 import {
   ArrowRight,
   CalendarDays,
-  Clipboard,
+  Check,
+  Copy,
+  Crown,
   Hash,
   Link2,
   Plus,
   ShieldCheck,
   Trash2,
+  UserPlus,
   Users,
 } from 'lucide-react'
 import clsx from 'clsx'
@@ -22,7 +25,7 @@ import { Avatar } from '../components/Avatar'
 import { EditableText } from '../components/EditableText'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorView, LoadingView } from '../components/StatusView'
-import { api, apiErrorToMessage } from '../lib/api'
+import { api, apiErrorToMessage, type UserPublic } from '../lib/api'
 import {
   compactDate,
   dateInputToIso,
@@ -36,6 +39,8 @@ export function WorkspacePage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const workspaceId = numberParam(params.workspaceId)
+  const [inviteLink, setInviteLink] = useState<string | null>(null)
+  const [inviteCopied, setInviteCopied] = useState(false)
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -52,6 +57,12 @@ export function WorkspacePage() {
   const meQuery = useQuery({
     queryKey: ['me'],
     queryFn: api.getMe,
+  })
+
+  const ownerQuery = useQuery({
+    queryKey: ['user', workspaceQuery.data?.owner_id],
+    queryFn: () => api.getUser(workspaceQuery.data?.owner_id ?? 0),
+    enabled: workspaceQuery.data?.owner_id !== undefined,
   })
 
   const updateWorkspaceMutation = useMutation({
@@ -79,14 +90,10 @@ export function WorkspacePage() {
 
   const inviteMutation = useMutation({
     mutationFn: () => api.createInvite(workspaceId ?? 0),
-    onSuccess: async (payload) => {
+    onSuccess: (payload) => {
       const link = toFrontendInviteLink(payload.invite_link)
-      try {
-        await navigator.clipboard.writeText(link)
-        toast.success('Invite link copied')
-      } catch {
-        toast.message('Invite link ready', { description: link })
-      }
+      setInviteLink(link)
+      copyInviteLink(link)
     },
     onError: (error) => toast.error(apiErrorToMessage(error)),
   })
@@ -116,9 +123,28 @@ export function WorkspacePage() {
   const workspace = workspaceQuery.data
   const tasks = tasksQuery.data ?? []
   const isOwner = meQuery.data?.user_id === workspace.owner_id
+  const owner = ownerQuery.data ?? (isOwner ? meQuery.data : null)
   const nextTask = tasks[0] ?? null
   const memberCount = workspace.contributors.length + 1
   const deadlineStatus = getDeadlineStatus(workspace.deadline)
+  const memberRows = [
+    owner
+      ? {
+          user: owner,
+          role: 'Owner',
+          isCurrentUser: owner.user_id === meQuery.data?.user_id,
+        }
+      : null,
+    ...workspace.contributors.map((contributor) => ({
+      user: contributor,
+      role: 'Collaborator',
+      isCurrentUser: contributor.user_id === meQuery.data?.user_id,
+    })),
+  ].filter(Boolean) as Array<{
+    user: UserPublic
+    role: string
+    isCurrentUser: boolean
+  }>
 
   async function saveWorkspaceTitle(nextTitle: string) {
     if (!nextTitle) {
@@ -137,13 +163,29 @@ export function WorkspacePage() {
     deleteWorkspaceMutation.mutate()
   }
 
+  async function copyInviteLink(link: string | null = inviteLink) {
+    if (!link) {
+      inviteMutation.mutate()
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(link)
+      setInviteCopied(true)
+      toast.success('Invite link copied')
+      window.setTimeout(() => setInviteCopied(false), 1800)
+    } catch {
+      toast.message('Invite link ready', { description: link })
+    }
+  }
+
   return (
     <article className="page workspace-page">
       <section className="workspace-overview">
         <header className="workspace-hero">
           <div className="page-kicker">
             <span className="workspace-marker large" aria-hidden="true">
-              <AppIcon name="study-space" size={26} />
+              <AppIcon name="study-space" size={40} />
             </span>
             Study space
           </div>
@@ -191,11 +233,11 @@ export function WorkspacePage() {
             <button
               type="button"
               className="button button-secondary"
-              onClick={() => inviteMutation.mutate()}
-              disabled={inviteMutation.isPending}
+              onClick={() => copyInviteLink()}
+              disabled={!isOwner || inviteMutation.isPending}
             >
-              <Clipboard size={16} />
-              Copy invite
+              {inviteCopied ? <Check size={16} /> : <Copy size={16} />}
+              {inviteLink ? 'Copy invite' : 'Create invite'}
             </button>
             <button
               type="button"
@@ -221,7 +263,7 @@ export function WorkspacePage() {
         </div>
         <div>
           <span className="meta-label">
-            <AppIcon name="task" size={18} />
+            <AppIcon name="task" size={22} />
             Tasks
           </span>
           <strong>{tasks.length}</strong>
@@ -245,36 +287,64 @@ export function WorkspacePage() {
         </div>
       </section>
 
-      <section className="workspace-team-panel" aria-label="Workspace team">
-        <div>
-          <span className="team-label">
-            <Users size={16} />
-            Team
-          </span>
-          <div className="avatar-stack">
-            {workspace.contributors.length ? (
-              workspace.contributors.map((contributor) => (
-                <Avatar
-                  key={contributor.user_id}
-                  name={contributor.username}
-                  src={contributor.profile_photo_link}
-                  size="sm"
-                />
-              ))
-            ) : (
-              <small>No invited collaborators yet</small>
-            )}
+      <section className="workspace-collaboration-panel" aria-label="Workspace collaboration">
+        <div className="collaboration-heading">
+          <div>
+            <span className="team-label">
+              <Users size={16} />
+              Collaboration
+            </span>
+            <p>{isOwner ? 'Invite people into this study space.' : 'You are collaborating in this shared space.'}</p>
           </div>
+          <button
+            type="button"
+            className="button button-secondary"
+            onClick={() => copyInviteLink()}
+            disabled={!isOwner || inviteMutation.isPending}
+            title={isOwner ? 'Create or copy invite link' : 'Only the owner can create invite links'}
+          >
+            <UserPlus size={16} />
+            {inviteLink ? 'Copy invite' : 'Invite people'}
+          </button>
         </div>
-        <button
-          type="button"
-          className="button button-ghost"
-          onClick={() => inviteMutation.mutate()}
-          disabled={inviteMutation.isPending}
-        >
-          <Link2 size={16} />
-          Invite people
-        </button>
+
+        <div className="invite-link-box">
+          <div>
+            <span className="meta-label">
+              <Link2 size={14} />
+              Invite link
+            </span>
+            <strong>{inviteLink ? 'Ready to share' : isOwner ? 'Generate a secure workspace link' : 'Owner managed'}</strong>
+            <small>{inviteLink ?? (isOwner ? 'Create a link, then send it to collaborators.' : 'Ask the owner for an invite link.')}</small>
+          </div>
+          <button
+            type="button"
+            className="icon-button"
+            onClick={() => copyInviteLink()}
+            disabled={!isOwner || inviteMutation.isPending}
+            aria-label={inviteLink ? 'Copy invite link' : 'Create invite link'}
+            title={inviteLink ? 'Copy invite link' : 'Create invite link'}
+          >
+            {inviteCopied ? <Check size={16} /> : <Copy size={16} />}
+          </button>
+        </div>
+
+        <div className="member-list">
+          {memberRows.map(({ user, role, isCurrentUser }) => (
+            <div className="member-card" key={`${role}-${user.user_id}`}>
+              <Avatar
+                name={user.username}
+                src={user.profile_photo_link}
+                size="sm"
+              />
+              <span>
+                <strong>{user.username}{isCurrentUser ? ' (you)' : ''}</strong>
+                <small>{role}</small>
+              </span>
+              {role === 'Owner' ? <Crown size={15} /> : <Users size={15} />}
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="workspace-focus-grid">
@@ -286,7 +356,7 @@ export function WorkspacePage() {
               to={`/app/workspaces/${workspace.workspace_id}/tasks/${nextTask.task_id}`}
             >
               <span className="task-icon">
-                <AppIcon name="task" size={23} />
+                <AppIcon name="task" size={32} />
               </span>
               <span>
                 <strong>{nextTask.title}</strong>
@@ -322,7 +392,7 @@ export function WorkspacePage() {
 
         {!tasksQuery.isLoading && !tasksQuery.isError && tasks.length === 0 ? (
           <EmptyState
-            icon={<AppIcon name="task" size={34} />}
+            icon={<AppIcon name="task" size={44} />}
             title="No tasks yet"
             description="Add a study goal, assignment, reading list, or practice session."
           />
@@ -336,7 +406,7 @@ export function WorkspacePage() {
               to={`/app/workspaces/${workspace.workspace_id}/tasks/${task.task_id}`}
             >
               <span className="task-icon">
-                <AppIcon name="task" size={23} />
+                <AppIcon name="task" size={32} />
               </span>
               <span className="task-card-copy">
                 <strong>{task.title}</strong>

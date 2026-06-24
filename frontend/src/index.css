@@ -146,13 +146,8 @@ p {
 .asset-icon {
   display: inline-block;
   flex: 0 0 auto;
-  background: currentColor;
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
+  color: inherit;
+  overflow: visible;
 }
 
 .button-primary {
@@ -501,8 +496,8 @@ p {
 }
 
 .workspace-marker {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -514,8 +509,8 @@ p {
 }
 
 .workspace-marker.large {
-  width: 46px;
-  height: 46px;
+  width: 58px;
+  height: 58px;
 }
 
 .workspace-nav-empty {
@@ -834,6 +829,90 @@ p {
   font-weight: 750;
 }
 
+.workspace-collaboration-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px 0 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.collaboration-heading,
+.invite-link-box,
+.member-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.collaboration-heading {
+  justify-content: space-between;
+}
+
+.collaboration-heading > div {
+  display: grid;
+  gap: 4px;
+}
+
+.collaboration-heading p,
+.invite-link-box small,
+.member-card small {
+  color: var(--muted);
+}
+
+.invite-link-box {
+  justify-content: space-between;
+  min-width: 0;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.invite-link-box > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.invite-link-box strong,
+.invite-link-box small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.member-card {
+  min-width: 0;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.member-card span {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  margin-right: auto;
+}
+
+.member-card strong,
+.member-card small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-card > svg {
+  color: var(--soft);
+}
+
 .avatar {
   display: inline-flex;
   align-items: center;
@@ -1055,8 +1134,8 @@ p {
 }
 
 .task-icon {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1090,14 +1169,14 @@ p {
 .note-list-item {
   width: 100%;
   border: 0;
-  padding: 10px;
+  padding: 11px 10px;
   background: transparent;
   border-radius: var(--radius-sm);
 }
 
 .note-list-item svg,
 .note-list-item .asset-icon {
-  margin-top: 1px;
+  margin-top: 0;
   color: var(--soft);
 }
 
@@ -1362,8 +1441,8 @@ p {
 }
 
 .empty-state-icon {
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1446,6 +1525,55 @@ p {
   color: var(--muted);
 }
 
+.avatar-editor {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+}
+
+.avatar-editor .avatar-md {
+  width: 72px;
+  height: 72px;
+}
+
+.avatar-upload-button {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.avatar-upload-button input,
+.profile-photo-actions input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.profile-photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.profile-photo-actions .button {
+  position: relative;
+}
+
 .settings-form {
   display: grid;
   gap: 16px;
@@ -1519,6 +1647,7 @@ p {
   }
 
   .workspace-command-panel,
+  .workspace-collaboration-panel,
   .workspace-team-panel,
   .workspace-next-panel,
   .task-composer {
@@ -1569,8 +1698,23 @@ p {
   }
 
   .workspace-team-panel,
+  .collaboration-heading,
+  .invite-link-box,
   .workspace-team-panel > div {
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .collaboration-heading .button,
+  .invite-link-box .icon-button {
+    width: 100%;
+  }
+
+  .profile-preview {
+    align-items: flex-start;
+  }
+
+  .profile-photo-actions {
     flex-direction: column;
   }
 

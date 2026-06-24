@@ -145,7 +145,7 @@ export function AppShell() {
                 }
               >
                 <span className="workspace-marker" aria-hidden="true">
-                  <AppIcon name="study-space" size={20} />
+                  <AppIcon name="study-space" size={26} />
                 </span>
                 <span className="workspace-nav-copy">
                   <strong>{workspace.title}</strong>

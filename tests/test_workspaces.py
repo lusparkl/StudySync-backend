@@ -106,6 +106,9 @@ def test_workspace_invite_accepting(client, auth_headers):
     accept_responce = client.post(f"/invites/{invite_link}", headers=second_user_headers)
     assert accept_responce.status_code == 200
 
+    accept_responce = client.post(f"/invites/{invite_link}", headers=second_user_headers)
+    assert accept_responce.status_code == 200
+
     workspace_responce = client.get(f"/workspaces/{workspace_id}", headers=second_user_headers)
     assert workspace_responce.status_code == 200
 

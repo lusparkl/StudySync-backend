@@ -1,5 +1,5 @@
 from sqlalchemy import select, or_
-from app.models import Workspace, User
+from app.models import Workspace, User, contributors
 from sqlalchemy.orm import Session
 from app.schemas import WorkspaceEdit, WorkspaceCreate
 
@@ -65,9 +65,12 @@ class WorkspacesRepository:
         if workspace.owner_id == user_id:
             return workspace
         
-        for contributor in workspace.contributors:
-            if contributor.user_id == user_id:
-                return workspace
+        stm = select(contributors).where(
+            contributors.c.workspace_id == workspace_id,
+            contributors.c.user_id == user_id,
+        )
+        if self.session.execute(stm).first() is not None:
+            return workspace
         
         workspace.contributors.append(user)
         self.session.commit()

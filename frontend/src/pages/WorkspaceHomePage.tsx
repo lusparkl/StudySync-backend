@@ -28,7 +28,7 @@ export function WorkspaceHomePage() {
 
   return (
     <EmptyState
-      icon={<AppIcon name="study-space" size={34} />}
+      icon={<AppIcon name="study-space" size={44} />}
       title="Create your first study space"
       description="StudySync starts with a shared space for one topic, course, exam, or project."
       action={

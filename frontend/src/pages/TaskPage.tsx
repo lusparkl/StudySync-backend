@@ -165,7 +165,7 @@ export function TaskPage() {
 
       <section className="task-document">
         <div className="page-kicker">
-          <AppIcon name="task" size={22} />
+          <AppIcon name="task" size={28} />
           Task
         </div>
         <EditableText
@@ -202,7 +202,7 @@ export function TaskPage() {
 
           {!notesQuery.isLoading && notes.length === 0 ? (
             <EmptyState
-              icon={<AppIcon name="note" size={34} />}
+              icon={<AppIcon name="note" size={44} />}
               title="No notes"
               description="Add a lightweight doc for formulas, resources, or explanations."
             />
@@ -219,7 +219,7 @@ export function TaskPage() {
                 )}
                 onClick={() => setSelectedNoteId(note.note_id)}
               >
-                <AppIcon name="note" size={22} />
+                <AppIcon name="note" size={30} />
                 <span>
                   <strong>{note.title}</strong>
                   <small>{note.text || 'Empty note'}</small>
@@ -323,7 +323,7 @@ function NoteEditor({
     return (
       <section className="note-editor empty-note-editor">
         <EmptyState
-          icon={<AppIcon name="note" size={34} />}
+          icon={<AppIcon name="note" size={44} />}
           title="Select a note"
           description="Notes you create for this task will open here."
         />
