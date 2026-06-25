@@ -61,3 +61,21 @@ def test_task_deletion(client, auth_headers):
 
     get_responce = client.get(f"/tasks/{task_id}", headers=auth_headers)
     assert get_responce.status_code == 404
+
+def test_task_deletion_with_notes(client, auth_headers):
+    workspace_id = _create_workspace(client, auth_headers).json()["workspace_id"]
+    task_id = _create_task(client, auth_headers, workspace_id).json()["task_id"]
+    note_responce = client.post(f"/tasks/{task_id}/notes", json={
+        "title": "Test note",
+        "text": "Test note text"
+    }, headers=auth_headers)
+
+    assert note_responce.status_code == 200
+
+    note_id = note_responce.json()["note_id"]
+
+    response = client.delete(f"/tasks/{task_id}", headers=auth_headers)
+    assert response.status_code == 204
+
+    get_note_responce = client.get(f"/notes/{note_id}", headers=auth_headers)
+    assert get_note_responce.status_code == 404

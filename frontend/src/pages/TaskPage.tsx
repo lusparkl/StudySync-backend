@@ -22,6 +22,7 @@ import remarkGfm from 'remark-gfm'
 import { toast } from 'sonner'
 
 import { AppIcon } from '../components/AppIcon'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { EditableText } from '../components/EditableText'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorView, LoadingView } from '../components/StatusView'
@@ -36,6 +37,8 @@ export function TaskPage() {
   const workspaceId = numberParam(params.workspaceId)
   const taskId = numberParam(params.taskId)
   const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null)
+  const [deleteTaskDialogOpen, setDeleteTaskDialogOpen] = useState(false)
+  const [noteToDelete, setNoteToDelete] = useState<Note | null>(null)
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -140,8 +143,6 @@ export function TaskPage() {
   }
 
   function deleteTask() {
-    const confirmed = window.confirm(`Delete "${task.title}" and its notes?`)
-    if (!confirmed) return
     deleteTaskMutation.mutate()
   }
 
@@ -155,7 +156,7 @@ export function TaskPage() {
         <button
           type="button"
           className="button button-danger"
-          onClick={deleteTask}
+          onClick={() => setDeleteTaskDialogOpen(true)}
           disabled={deleteTaskMutation.isPending}
         >
           <Trash2 size={16} />
@@ -239,13 +240,40 @@ export function TaskPage() {
               payload,
             })
           }
-          onDelete={(note) => {
-            const confirmed = window.confirm(`Delete "${note.title}"?`)
-            if (!confirmed) return
-            deleteNoteMutation.mutate(note.note_id)
-          }}
+          onDelete={setNoteToDelete}
         />
       </section>
+
+      <ConfirmDialog
+        open={deleteTaskDialogOpen}
+        title="Delete task?"
+        description={`"${task.title}" and all of its notes will be removed. This cannot be undone.`}
+        confirmLabel="Delete task"
+        tone="danger"
+        busy={deleteTaskMutation.isPending}
+        onCancel={() => setDeleteTaskDialogOpen(false)}
+        onConfirm={deleteTask}
+      />
+
+      <ConfirmDialog
+        open={noteToDelete !== null}
+        title="Delete note?"
+        description={
+          noteToDelete
+            ? `"${noteToDelete.title}" will be removed from this task. This cannot be undone.`
+            : ''
+        }
+        confirmLabel="Delete note"
+        tone="danger"
+        busy={deleteNoteMutation.isPending}
+        onCancel={() => setNoteToDelete(null)}
+        onConfirm={() => {
+          if (!noteToDelete) return
+          deleteNoteMutation.mutate(noteToDelete.note_id, {
+            onSuccess: () => setNoteToDelete(null),
+          })
+        }}
+      />
     </article>
   )
 }

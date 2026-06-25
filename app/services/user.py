@@ -4,6 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas import UserCreate, UserEdit
 from sqlalchemy.exc import IntegrityError
 from app.auth.helpers import verify_password, create_access_token, hash_password
+import re
 
 
 
@@ -61,6 +62,9 @@ class UserService:
         if user is None:
             raise HTTPException(status_code=400, detail="Username or password is wrong.")
         
+        if user.hashed_password is None:
+            raise HTTPException(status_code=400, detail="Username or password is wrong.")
+        
         if not verify_password(data.password, user.hashed_password):
             raise HTTPException(status_code=400, detail="Username or password is wrong.")
 
@@ -72,6 +76,35 @@ class UserService:
     
     def get_token_for_service_login_user(self, user):
         return create_access_token(user.user_id)
+
+    def login_or_create_oauth_user(self, email: str, username: str, provider: str, provider_id: str | int | None = None):
+        existing_user = self.get_user_by_email(email)
+
+        if existing_user:
+            return self.get_token_for_service_login_user(existing_user)
+        
+        clean_username = self._make_oauth_username(username, provider, provider_id)
+        return self.create_user_for_service_login_user(UserCreate(username=clean_username, email=email))
+    
+    def _make_oauth_username(self, username: str, provider: str, provider_id: str | int | None):
+        fallback_id = str(provider_id) if provider_id is not None else "user"
+        base_username = username or f"{provider}_{fallback_id}"
+        base_username = re.sub(r"[^a-zA-Z0-9_-]+", "_", base_username).strip("_")
+        base_username = base_username or f"{provider}_{fallback_id}"
+
+        candidate = base_username
+        if self.repository.get_by_email_or_username(candidate) is None:
+            return candidate
+        
+        candidate = f"{base_username}_{provider}_{fallback_id}"
+        if self.repository.get_by_email_or_username(candidate) is None:
+            return candidate
+
+        index = 2
+        while self.repository.get_by_email_or_username(f"{candidate}_{index}") is not None:
+            index += 1
+        
+        return f"{candidate}_{index}"
         
 
     def set_profile_photo_for_user(self, photo_url: str, user_id: int):
@@ -80,6 +113,9 @@ class UserService:
 
     def change_user_password(self, user_id: int, old_password: str, new_password: str):
         user = self._get_user_or_404(user_id)
+
+        if user.hashed_password is None:
+            raise HTTPException(status_code=400, detail="Password login is not enabled for this account.")
         
         if not verify_password(old_password, user.hashed_password):
             raise HTTPException(status_code=400, detail="Wrong old password.")

@@ -22,6 +22,7 @@ import { toast } from 'sonner'
 
 import { AppIcon } from '../components/AppIcon'
 import { Avatar } from '../components/Avatar'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { EditableText } from '../components/EditableText'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorView, LoadingView } from '../components/StatusView'
@@ -41,6 +42,7 @@ export function WorkspacePage() {
   const workspaceId = numberParam(params.workspaceId)
   const [inviteLink, setInviteLink] = useState<string | null>(null)
   const [inviteCopied, setInviteCopied] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   const workspaceQuery = useQuery({
     queryKey: ['workspace', workspaceId],
@@ -156,10 +158,6 @@ export function WorkspacePage() {
   }
 
   async function deleteWorkspace() {
-    const confirmed = window.confirm(
-      `Delete "${workspace.title}" and all of its tasks?`,
-    )
-    if (!confirmed) return
     deleteWorkspaceMutation.mutate()
   }
 
@@ -242,7 +240,7 @@ export function WorkspacePage() {
             <button
               type="button"
               className="button button-danger"
-              onClick={deleteWorkspace}
+              onClick={() => setDeleteDialogOpen(true)}
               disabled={deleteWorkspaceMutation.isPending}
             >
               <Trash2 size={16} />
@@ -421,6 +419,17 @@ export function WorkspacePage() {
           ))}
         </div>
       </section>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        title="Delete study space?"
+        description={`"${workspace.title}" and all of its tasks will be removed. This cannot be undone.`}
+        confirmLabel="Delete space"
+        tone="danger"
+        busy={deleteWorkspaceMutation.isPending}
+        onCancel={() => setDeleteDialogOpen(false)}
+        onConfirm={deleteWorkspace}
+      />
     </article>
   )
 }

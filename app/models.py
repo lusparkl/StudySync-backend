@@ -36,7 +36,7 @@ class Workspace(Base):
     deadline: Mapped[datetime] = mapped_column(nullable=True)
 
     owner: Mapped[User] = relationship(back_populates="workspaces")
-    tasks: Mapped[list[Task]] = relationship(back_populates="workspace")
+    tasks: Mapped[list[Task]] = relationship(back_populates="workspace", cascade="all, delete-orphan")
     contributors: Mapped[list[User]] = relationship(secondary=contributors, back_populates="shared_workspaces")
 
 class Task(Base):
@@ -50,7 +50,7 @@ class Task(Base):
 
     owner: Mapped[User] = relationship(back_populates="tasks", )
     workspace: Mapped[Workspace] = relationship(back_populates="tasks")
-    notes: Mapped[list[Note]] = relationship(back_populates="task")
+    notes: Mapped[list[Note]] = relationship(back_populates="task", cascade="all, delete-orphan")
 
 class Note(Base):
     __tablename__="notes"

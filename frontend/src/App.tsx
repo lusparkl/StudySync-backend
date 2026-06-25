@@ -6,6 +6,7 @@ import { AppShell } from './components/AppShell'
 import { AuthPage } from './pages/AuthPage'
 import { InvitePage } from './pages/InvitePage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { OAuthCallbackPage } from './pages/OAuthCallbackPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { TaskPage } from './pages/TaskPage'
 import { WorkspaceHomePage } from './pages/WorkspaceHomePage'
@@ -53,6 +54,7 @@ export default function App() {
         }
       />
       <Route path="/invite/:inviteToken" element={<InvitePage />} />
+      <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
       <Route element={<RequireAuth />}>
         <Route path="/app" element={<WorkspaceHomePage />} />
         <Route path="/app/workspaces/:workspaceId" element={<WorkspacePage />} />

@@ -11,7 +11,7 @@ import {
   storePendingInvite,
 } from '../auth/token'
 import { BrandLogo } from '../components/BrandLogo'
-import { api, apiErrorToMessage } from '../lib/api'
+import { api, apiErrorToMessage, getApiBaseUrl } from '../lib/api'
 
 type AuthPageProps = {
   mode: 'login' | 'register'
@@ -83,6 +83,15 @@ export function AuthPage({ mode }: AuthPageProps) {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  function startOAuth(provider: 'google' | 'github') {
+    const inviteToken = state?.pendingInvite ?? getPendingInvite()
+    if (inviteToken) {
+      storePendingInvite(inviteToken)
+    }
+
+    window.location.href = `${getApiBaseUrl()}/login/${provider}`
   }
 
   return (
@@ -188,6 +197,33 @@ export function AuthPage({ mode }: AuthPageProps) {
             {isRegister ? 'Create account' : 'Log in'}
           </button>
         </form>
+
+        <div className="oauth-divider">
+          <span>or continue with</span>
+        </div>
+
+        <div className="oauth-actions">
+          <button
+            type="button"
+            className="button button-secondary oauth-button"
+            onClick={() => startOAuth('google')}
+          >
+            <span className="oauth-mark google-mark" aria-hidden="true">
+              G
+            </span>
+            Google
+          </button>
+          <button
+            type="button"
+            className="button button-secondary oauth-button"
+            onClick={() => startOAuth('github')}
+          >
+            <span className="oauth-mark github-mark" aria-hidden="true">
+              GH
+            </span>
+            GitHub
+          </button>
+        </div>
 
         <p className="auth-switch">
           {isRegister ? 'Already have an account?' : 'New to StudySync?'}{' '}
