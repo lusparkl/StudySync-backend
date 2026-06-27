@@ -15,7 +15,7 @@ export function WorkspaceHomePage() {
     queryFn: api.getWorkspaces,
   })
 
-  if (workspacesQuery.isLoading) {
+  if (workspacesQuery.isLoading || workspacesQuery.isFetching) {
     return <LoadingView label="Loading study spaces" />
   }
 
