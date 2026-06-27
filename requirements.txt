@@ -9,6 +9,7 @@ boto3
 python-dotenv
 python-multipart
 requests
+authlib
 pymupdf4llm
 langgraph
 exa-py
