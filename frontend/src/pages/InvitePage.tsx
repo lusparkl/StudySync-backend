@@ -34,9 +34,9 @@ export function InvitePage() {
   } = acceptMutation
 
   useEffect(() => {
-    if (!inviteToken || !isAuthenticated || isAccepting) return
+    if (!inviteToken || !isAuthenticated || isAccepting || isError) return
     acceptInvite(inviteToken)
-  }, [acceptInvite, inviteToken, isAccepting, isAuthenticated])
+  }, [acceptInvite, inviteToken, isAccepting, isAuthenticated, isError])
 
   if (!inviteToken) {
     return (

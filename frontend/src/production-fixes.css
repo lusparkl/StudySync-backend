@@ -1,0 +1,11 @@
+.editable-title {
+  display: block;
+  overflow: hidden;
+  resize: none;
+}
+
+@media (max-width: 860px) {
+  .settings-page .settings-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

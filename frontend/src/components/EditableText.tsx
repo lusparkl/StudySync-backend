@@ -33,15 +33,17 @@ export function EditableText({
   useLayoutEffect(() => {
     if (!textareaRef.current) return
     resizeTextarea(textareaRef.current)
-  }, [value, multiline])
+  }, [value, multiline, title])
 
   async function save(rawValue: string) {
-    const nextValue = rawValue.trim()
+    const nextValue = title
+      ? rawValue.replace(/\s+/g, ' ').trim()
+      : rawValue.trim()
     if (nextValue === value.trim() || disabled) return
     await onSave(nextValue)
   }
 
-  if (multiline) {
+  if (multiline || title) {
     return (
       <div className="editable-wrap">
         <textarea
@@ -49,14 +51,22 @@ export function EditableText({
           ref={textareaRef}
           className={clsx(
             'editable',
-            'editable-textarea',
+            multiline && 'editable-textarea',
+            title && 'editable-title',
             variant === 'document' && 'editable-document',
           )}
           defaultValue={value}
           placeholder={placeholder}
           disabled={disabled}
+          rows={1}
           onInput={(event) => resizeTextarea(event.currentTarget)}
           onBlur={(event) => save(event.currentTarget.value)}
+          onKeyDown={(event) => {
+            if (title && event.key === 'Enter') {
+              event.preventDefault()
+              event.currentTarget.blur()
+            }
+          }}
         />
         {saving ? <Loader2 className="inline-spinner spin" size={16} /> : null}
       </div>
@@ -69,7 +79,6 @@ export function EditableText({
         key={value}
         className={clsx(
           'editable',
-          title && 'editable-title',
           variant === 'document' && 'editable-document',
         )}
         defaultValue={value}

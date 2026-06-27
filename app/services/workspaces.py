@@ -43,7 +43,9 @@ class WorkspacesService:
     
     def delete_workspace_for_user(self, workspace_id: int, user_id: int):
         workspace = self._get_workspace_or_404(workspace_id)
-        self._check_is_user_allowed(workspace, user_id)
+
+        if workspace.owner_id != user_id:
+            raise HTTPException(status_code=403, detail="Only the owner can delete this workspace.")
 
         if self.workspace_repository.delete(workspace_id):
             return Response(status_code=status.HTTP_204_NO_CONTENT)

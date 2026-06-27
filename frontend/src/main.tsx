@@ -8,6 +8,7 @@ import { AuthProvider } from './auth/AuthContext.tsx'
 import { ThemedToaster } from './components/ThemedToaster.tsx'
 import { ThemeProvider } from './theme/ThemeProvider.tsx'
 import './index.css'
+import './production-fixes.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {

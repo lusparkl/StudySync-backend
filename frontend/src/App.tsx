@@ -1,16 +1,45 @@
+import { lazy, Suspense } from 'react'
 import type { ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { useAuth } from './auth/useAuth'
 import { AppShell } from './components/AppShell'
-import { AuthPage } from './pages/AuthPage'
-import { InvitePage } from './pages/InvitePage'
-import { NotFoundPage } from './pages/NotFoundPage'
-import { OAuthCallbackPage } from './pages/OAuthCallbackPage'
-import { SettingsPage } from './pages/SettingsPage'
-import { TaskPage } from './pages/TaskPage'
-import { WorkspaceHomePage } from './pages/WorkspaceHomePage'
-import { WorkspacePage } from './pages/WorkspacePage'
+import { LoadingView } from './components/StatusView'
+
+const AuthPage = lazy(() =>
+  import('./pages/AuthPage').then((module) => ({ default: module.AuthPage })),
+)
+const InvitePage = lazy(() =>
+  import('./pages/InvitePage').then((module) => ({ default: module.InvitePage })),
+)
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFoundPage').then((module) => ({
+    default: module.NotFoundPage,
+  })),
+)
+const OAuthCallbackPage = lazy(() =>
+  import('./pages/OAuthCallbackPage').then((module) => ({
+    default: module.OAuthCallbackPage,
+  })),
+)
+const SettingsPage = lazy(() =>
+  import('./pages/SettingsPage').then((module) => ({
+    default: module.SettingsPage,
+  })),
+)
+const TaskPage = lazy(() =>
+  import('./pages/TaskPage').then((module) => ({ default: module.TaskPage })),
+)
+const WorkspaceHomePage = lazy(() =>
+  import('./pages/WorkspaceHomePage').then((module) => ({
+    default: module.WorkspaceHomePage,
+  })),
+)
+const WorkspacePage = lazy(() =>
+  import('./pages/WorkspacePage').then((module) => ({
+    default: module.WorkspacePage,
+  })),
+)
 
 function RequireAuth() {
   const { isAuthenticated } = useAuth()
@@ -35,36 +64,38 @@ function PublicOnly({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/app" replace />} />
-      <Route
-        path="/login"
-        element={
-          <PublicOnly>
-            <AuthPage mode="login" />
-          </PublicOnly>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicOnly>
-            <AuthPage mode="register" />
-          </PublicOnly>
-        }
-      />
-      <Route path="/invite/:inviteToken" element={<InvitePage />} />
-      <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
-      <Route element={<RequireAuth />}>
-        <Route path="/app" element={<WorkspaceHomePage />} />
-        <Route path="/app/workspaces/:workspaceId" element={<WorkspacePage />} />
+    <Suspense fallback={<LoadingView label="Opening StudySync" />}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/app" replace />} />
         <Route
-          path="/app/workspaces/:workspaceId/tasks/:taskId"
-          element={<TaskPage />}
+          path="/login"
+          element={
+            <PublicOnly>
+              <AuthPage mode="login" />
+            </PublicOnly>
+          }
         />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Route>
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route
+          path="/register"
+          element={
+            <PublicOnly>
+              <AuthPage mode="register" />
+            </PublicOnly>
+          }
+        />
+        <Route path="/invite/:inviteToken" element={<InvitePage />} />
+        <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/app" element={<WorkspaceHomePage />} />
+          <Route path="/app/workspaces/:workspaceId" element={<WorkspacePage />} />
+          <Route
+            path="/app/workspaces/:workspaceId/tasks/:taskId"
+            element={<TaskPage />}
+          />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   )
 }

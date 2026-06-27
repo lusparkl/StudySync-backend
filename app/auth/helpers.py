@@ -56,6 +56,6 @@ def create_access_token(user_id: int) -> str:
 def decode_access_token(token: str) -> dict | None:
     try:
         return jwt.decode(token, SECRET_KEY, ALGORITHM)
-    except jwt.ExpiredSignatureError:
+    except jwt.PyJWTError:
         return None
     
