@@ -1,4 +1,4 @@
-# 📚 StudySync Backend
+# StudySync Backend
 
 <div align="center">
 
@@ -17,9 +17,9 @@
 
 ---
 
-## ✨ Overview
+## Overview
 
-StudySync is my personal project, intendet to learn how to build real api's and also how to build powerful ai agents, not just chatGPT wrappers. Created for hack club horizons!
+StudySync is my personal project, I've build with intend to learn how to build real api's and also how to build powerful ai agents, not just chatGPT wrappers. At the start we build it as a team: me - backend developer, my friend - frontend, but unfortunately my friend weren't able to make this project with me, so all frontend is created by me using Codex. Created for hack club horizons!
 
 ###  Key Highlights
 -  **JWT Authentication** - Secure token-based user authentication
@@ -41,32 +41,32 @@ StudySync is my personal project, intendet to learn how to build real api's and 
 - [x] User profile management and editing
 - [x] Auth with external services(Google, Github)
 
-### 🛠️ Workspace Management
+###  Workspace Management
 - [x] Create and manage multiple workspaces
 - [x] Invite-based collaboration system
 - [x] Share workspaces with team members
 - [x] Full CRUD operations on workspaces
 
-### 📋 Task & Note System
+###  Task & Note System
 - [x] Hierarchical task organization
 - [x] Attach multiple notes to tasks
 - [x] Edit and delete tasks/notes
 - [x] Workspace-based task filtering
 
-### 🧠 AI-Powered Search
+###  AI-Powered Search
 - [x] **YouTube Search** - Find educational videos
 - [x] **Web Search** - Search across the internet
 - [x] **Book Search** - Search and extract PDF content
 - [ ] **AI Study Planning** - Still working on this one
 
-### 📸 Storage & Media
+###  Storage & Media
 - [x] AWS S3 integration for profile photos
 - [x] Secure file upload management
 - [x] Optimized media storage utilities
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.14+
@@ -117,7 +117,7 @@ The API will be available at `http://localhost:8000`
 
 ---
 
-## 📖 API Documentation
+##  API Documentation
 
 ###  Base URLs
 - **Local Development**: `http://localhost:8000`
@@ -126,7 +126,7 @@ The API will be available at `http://localhost:8000`
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 
-👉 **Full API documentation**: See [API.md](API.md)
+ **Full API documentation**: [API.md](API.md)
 
 ---
 
